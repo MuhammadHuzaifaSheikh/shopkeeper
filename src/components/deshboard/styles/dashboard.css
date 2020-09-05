@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.list{
+    transition: .7s;
+    font-family: 'Roboto', sans-serif;
+}
+
+.link{
+    text-decoration: none;
+    color: black;
+}
+
+.link:hover{
+    background: rgba(555,555,555,0.2);
+}
+.activeLink{
+    background: rgba(555,555,555,0.2);
+}

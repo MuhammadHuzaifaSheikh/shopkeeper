@@ -93,9 +93,9 @@ export default function AddProducts() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        var data = {
+
+        var requirData={
             name:productName,
-            description,
             photoUrl,
             photoName,
             buyPrice,
@@ -103,14 +103,25 @@ export default function AddProducts() {
             commission,
             shopkeeperId:localStorage.getItem('shopKeeper'),
 
+        }
+
+        var data = {
+            name:requirData.name,
+            photoUrl:requirData.photoUrl,
+            photoName:requirData.photoName,
+            buyPrice:requirData.buyPrice,
+            sellPrice:requirData.sellPrice,
+            commission:requirData.commission,
+            description,
+            shopkeeperId:localStorage.getItem('shopKeeper'),
+
         };
 
 
 
 
-
-        for (var d in data) {
-            if (data[d] === '') {
+        for (var d in requirData) {
+            if (requirData[d] === '') {
                 setSnackbarOpen(true)
                 setSnackbarMessage("Some fields are missing!")
                 setVariant('error')
@@ -226,7 +237,7 @@ export default function AddProducts() {
 
             <Dialog fullWidth
                     open={openDialog}
-                    onClose={openDialog}
+                    onClose={()=>setOpenDialog(openDialog)}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description">
                 <DialogContent style={{textAlign: "center", paddingTop: "30px"}}>

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 // import Chat from "./";
 import Chat from "../deshboard/chat/Chat";
 import AddProducts from "../deshboard/products/AddProduts";
@@ -15,10 +15,71 @@ import {
     Switch,
     useRouteMatch
 } from "react-router-dom";
+import {IconButton} from "@material-ui/core";
+import {Edit} from "@material-ui/icons";
 function Main (){
     let {path} = useRouteMatch();
+    const [shopkeeperInformation, setShopkeeperInformation] = useState('');
+    const [salesman, setSalesman] = useState('');
+
+useEffect(()=>{
+    getShopkeeperInfo()
+    getSalesman()
+},[])
 
 
+
+    const getShopkeeperInfo =()=>{
+        let url = 'http://localhost:5000/shopkeeper/get'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({shopkeeperId:localStorage.getItem('shopKeeper')}),
+            headers: {
+                "content-type": "application/json",
+
+            }
+        }).then((data) => {
+            data.json().then((response) => {
+                console.log('shopkeeper',response);
+                setShopkeeperInformation(response.data)
+
+
+            })
+
+
+        })
+            .catch((error) => {
+                console.log(error);
+                console.log('error is running');
+
+
+            });
+    }
+
+    const getSalesman=()=>{
+        let url = 'http://localhost:5000/salesman/get'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),}),
+            headers: {
+                "content-type": "application/json",
+
+            }
+        }).then((data) => {
+            data.json().then((response) => {
+                console.log(response,'response');
+                setSalesman(response.data)
+            })
+
+
+        })
+            .catch((error) => {
+                console.log(error);
+                console.log('error is running');
+
+
+            });
+    }
 
         return(
             <div>
@@ -48,7 +109,7 @@ function Main (){
                             <Income/>
                         </Route>
                         <Route exact path={`${path}/history`}>
-                            <MyHistory/>
+                            <MyHistory  shopkeeperinfo={shopkeeperInformation}/>
                         </Route>
 
                     </Switch>

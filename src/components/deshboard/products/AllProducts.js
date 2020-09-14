@@ -255,7 +255,7 @@ export default function MaterialTableDemo() {
             </Snackbar>
             <Dialog fullWidth
                     open={openDialog}
-                    onClose={openDialog}
+                    onClose={()=>setOpenDialog(openDialog)}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description">
                 <DialogContent style={{textAlign: "center", paddingTop: "30px"}}>

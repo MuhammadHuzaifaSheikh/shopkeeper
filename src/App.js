@@ -10,14 +10,6 @@ import {
 
 } from "react-router-dom";
 
-// Since routes are regular React components, they
-// may be rendered anywhere in the app, including in
-// child elements.
-//
-// This helps when it's time to code-split your app
-// into multiple bundles because code-splitting a
-// React Router app is the same as code-splitting
-// any other React app.
 
 export default function App() {
     return (
@@ -38,6 +30,11 @@ export default function App() {
 
                     <Route exact path="/" render={() => {
                         return localStorage.getItem('shopKeeper') ?<Redirect to={'/dashboard'} />:  <SignIn/>
+
+                    }}>
+                    </Route>
+                    <Route  path="*" render={() => {
+                        return   <Dashboard/>
 
                     }}>
                     </Route>

@@ -1,0 +1,42 @@
+
+
+.info_container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.option {
+
+    width: 100%;
+    text-transform: capitalize;
+    margin-bottom: 5px;
+}
+
+.order_id {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    text-transform: capitalize;
+    margin-bottom: 5px;
+    text-align: center;
+
+}
+
+.option1 {
+    font-weight: 800;
+    margin-right: 5px;
+    text-align: left;
+}
+
+.option2 {
+    padding-left: 0;
+    text-align: left;
+}
+
+
+/*table styling*/
+
+

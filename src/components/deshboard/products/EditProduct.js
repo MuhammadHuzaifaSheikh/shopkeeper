@@ -64,6 +64,7 @@ export default function EditProduct() {
                 setSellPrice(response.data.sellPrice)
                 setCommission(response.data.commission)
                 setPhotoUrl(response.data.photoUrl)
+                setPhotoName(response.data.photoName)
 
                 if (response.data) {
                     setOpenDialog(false)
@@ -86,6 +87,90 @@ export default function EditProduct() {
 
             });
     }
+
+
+    function updateData  ()  {
+
+
+
+
+        var requirData={
+            name:productName,
+            photoUrl,
+            photoName,
+            buyPrice,
+            sellPrice,
+            commission,
+            shopkeeperId:localStorage.getItem('shopKeeper'),
+            id,
+        }
+
+        var data = {
+            name:requirData.name,
+            photoUrl:requirData.photoUrl,
+            photoName:requirData.photoName,
+            buyPrice:requirData.buyPrice,
+            sellPrice:requirData.sellPrice,
+            commission:requirData.commission,
+            description,
+            shopkeeperId:localStorage.getItem('shopKeeper'),
+            id,
+        };
+
+
+
+
+
+        for (var d in requirData) {
+            if (requirData[d] === '') {
+                setSnackbarOpen(true)
+                setSnackbarMessage("Some fields are missing!")
+                setVariant('error')
+                return;
+                break;
+            }
+        }
+
+
+
+        setOpenDialog(true)
+        setDialogText('Loading ....')
+
+        let url = 'http://localhost:5000/products/edit'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                "content-type": "application/json",
+
+            }
+        }).then((data) => {
+            data.json().then((response) => {
+                console.log(response);
+
+
+                getProductDetail()
+
+
+                setSnackbarOpen(true)
+                setSnackbarMessage("Product Successfully Added!")
+                setVariant('success')
+
+
+
+            })
+
+
+        })
+            .catch((error) => {
+                console.log(error);
+
+
+
+            });
+
+    }
+
 
     function onValueProductName(e) {
         console.log(e.target.value);
@@ -136,75 +221,6 @@ export default function EditProduct() {
         setOpenImageCropper(boolean)
     }
 
-    function updateData  ()  {
-        setOpenDialog(true)
-        setDialogText('Loading ....')
-
-        var data = {
-            name:productName,
-            description,
-            photoUrl,
-            photoName,
-            buyPrice,
-            sellPrice,
-            commission,
-            shopkeeperId:localStorage.getItem('shopKeeper'),
-            id,
-
-        };
-
-
-
-
-
-        for (var d in data) {
-            if (data[d] === '') {
-                setSnackbarOpen(true)
-                setSnackbarMessage("Some fields are missing!")
-                setVariant('error')
-                return;
-                break;
-            }
-        }
-
-
-        console.log(data);
-
-        let url = 'http://localhost:5000/products/edit'
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                "content-type": "application/json",
-
-            }
-        }).then((data) => {
-            data.json().then((response) => {
-                console.log(response);
-
-
-                getProductDetail()
-
-
-                setSnackbarOpen(true)
-                setSnackbarMessage("Product Successfully Added!")
-                setVariant('success')
-
-
-                // history.push('/main/find/' +response.data._id)
-
-            })
-
-
-        })
-            .catch((error) => {
-                console.log(error);
-
-
-
-            });
-
-    }
 
     return (
         <div>

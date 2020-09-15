@@ -1,6 +1,7 @@
 import React, {forwardRef, useState, useEffect} from 'react';
 import './history.css'
-
+import IncomeHeader from "./IncomeHeader";
+import MyChart from "../Graph/Graph";
 import MaterialTable from 'material-table';
 import {Dialog, DialogContent, CircularProgress, Typography, Button} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
@@ -9,6 +10,10 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
+import clsx from 'clsx';
 
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -46,6 +51,46 @@ const styles = (theme) => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
+    },
+    toolbar: {
+        paddingRight: 24, // keep right padding when drawer closed
+    },
+    toolbarIcon: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: 36,
+    },
+    menuButtonHidden: {
+        display: 'none',
+    },
+    title: {
+        flexGrow: 1,
+    },
+
+    container: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+    },
+    paper: {
+        padding: theme.spacing(5),
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
+    },
+    fixedHeight: {
+        height: 600,
     },
 });
 
@@ -117,8 +162,11 @@ let last7Days = Date.now() - (1000 * 3600 * 24 * 7);
 let last30Days = Date.now() - (1000 * 3600 * 24 * 30);
 let lastYear = Date.now() - (1000 * 3600 * 24 * 365);
 let fullTime = Date.now();
+
+
 export default function MaterialTableDemo(props) {
     const classes = useStyles();
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     const [state, setState] = useState({
         columns: [
@@ -161,7 +209,7 @@ export default function MaterialTableDemo(props) {
         }
     };
     const filterTimeandget = () => {
-        setMoveCircle(true)
+        setOpenDialog(true)
 
 
         var filter = {
@@ -182,7 +230,8 @@ export default function MaterialTableDemo(props) {
             }
         }).then((data) => {
             data.json().then((response) => {
-                setMoveCircle(false)
+                setOpenDialog(false)
+
 
                 setBill(response.data)
 
@@ -267,7 +316,7 @@ export default function MaterialTableDemo(props) {
             });
 
     }
-    const getSalesman=()=>{
+    const getSalesman = () => {
         let url = 'http://localhost:5000/salesman/get'
         fetch(url, {
             method: 'POST',
@@ -278,7 +327,7 @@ export default function MaterialTableDemo(props) {
             }
         }).then((data) => {
             data.json().then((response) => {
-                console.log(response,'response');
+                console.log(response, 'response');
                 setSalesman(response.data)
             })
 
@@ -292,79 +341,128 @@ export default function MaterialTableDemo(props) {
             });
     }
 
-    const filterBySalesman = (e) => {
-        setFilterSalesman(e.target.value)
+    const filterBySalesman = () => {
 
-        setMoveCircle(true)
+        setOpenDialog(true)
 
 
-        if (filterSalesman === 'all') {
-            getAll()
-        } else {
-            let conditionFilter = []
+        let conditionFilter = []
 
-            console.log(filterSalesman);
+        console.log(filterSalesman);
 
-            filterSalesman.forEach((item, index) => {
-                conditionFilter.push({salesmanId: item})
+        filterSalesman.forEach((item, index) => {
+            conditionFilter.push({salesmanId: item})
+        })
+
+
+        if (filterTime !== fullTime) {
+            let filter = {
+                $or: conditionFilter,
+                timeOfSold: {$gte: filterTime},
+                shopkeeperId: localStorage.getItem('shopKeeper')
+            };
+
+            let url = 'http://localhost:5000/bill/filterBill'
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(filter),
+                headers: {
+                    "content-type": "application/json",
+
+                }
+            }).then((data) => {
+                data.json().then((response) => {
+                    setOpenDialog(false)
+
+                    console.log(response);
+                    setMoveCircle(false)
+
+                    setBill(response.data)
+
+                    response.data.forEach((i) => {
+                        i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
+                        i.totalAmount = i.totalAmount + ' Rs'
+
+                        i.quantity = i.totalProduct
+                    })
+
+
+                    setState((prevState) => {
+                        let data = [...prevState.data];
+                        data = response.data
+                        return {...prevState, data};
+                    });
+
+
+                })
+
+
             })
+                .catch((error) => {
+                    console.log(error);
+                    console.log('error is running');
+                    if (error === "TypeError: Failed to fetch") {
+                        setDialogText('Loading ....')
+
+                    }
+                    setDialogText('Loading ....')
+
+                });
+        } else {
+            let filter = {
+                $or: conditionFilter,
+                timeOfSold: {$lte: filterTime},
+                shopkeeperId: localStorage.getItem('shopKeeper')
+            };
+
+            let url = 'http://localhost:5000/bill/filterBill'
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(filter),
+                headers: {
+                    "content-type": "application/json",
+
+                }
+            }).then((data) => {
+                data.json().then((response) => {
+                    setOpenDialog(false)
+
+                    console.log(response);
+                    setMoveCircle(false)
+
+                    setBill(response.data)
+
+                    response.data.forEach((i) => {
+                        i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
+                        i.totalAmount = i.totalAmount + ' Rs'
+
+                        i.quantity = i.totalProduct
+                    })
 
 
-            if (filterTime !== fullTime) {
-                var filter = {
-                    $or: conditionFilter,
-                    timeOfSold: {$gte: filterTime},
-                    shopkeeperId: localStorage.getItem('shopKeeper')
-                };
+                    setState((prevState) => {
+                        let data = [...prevState.data];
+                        data = response.data
+                        return {...prevState, data};
+                    });
 
 
-        //         let url = 'http://localhost:5000/bill/filterBill'
-        //         fetch(url, {
-        //             method: 'POST',
-        //             body: JSON.stringify(filter),
-        //             headers: {
-        //                 "content-type": "application/json",
-        //
-        //             }
-        //         }).then((data) => {
-        //             data.json().then((response) => {
-        //
-        //                 console.log(response);
-        //                 setMoveCircle(false)
-        //
-        //                 setBill(response.data)
-        //
-        //                 response.data.forEach((i) => {
-        //                     i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
-        //                     i.totalAmount = i.totalAmount + ' Rs'
-        //
-        //                     i.quantity = i.totalProduct
-        //                 })
-        //
-        //
-        //                 setState((prevState) => {
-        //                     let data = [...prevState.data];
-        //                     data = response.data
-        //                     return {...prevState, data};
-        //                 });
-        //
-        //
-        //             })
-        //
-        //
-        //         })
-        //             .catch((error) => {
-        //                 console.log(error);
-        //                 console.log('error is running');
-        //                 if (error === "TypeError: Failed to fetch") {
-        //                     setDialogText('Loading ....')
-        //
-        //                 }
-        //                 setDialogText('Loading ....')
-        //
-        //             });
-            }
+                })
+
+
+            })
+                .catch((error) => {
+                    console.log(error);
+                    console.log('error is running');
+                    if (error === "TypeError: Failed to fetch") {
+                        setDialogText('Loading ....')
+
+                    }
+                    setDialogText('Loading ....')
+
+                });
         }
+
 
     }
 
@@ -376,6 +474,30 @@ export default function MaterialTableDemo(props) {
 
     return (
         <div>
+
+                <Container maxWidth="lg" className={classes.container}>
+                    <Grid container spacing={3}>
+                        {/* Chart */}
+                        <Grid item xs={12} md={8} lg={9}>
+                            <Paper className={fixedHeightPaper}>
+                                <MyChart />
+                            </Paper>
+                        </Grid>
+                        {/* Recent Deposits */}
+                        <Grid item xs={12} md={4} lg={3}>
+                            <Paper className={fixedHeightPaper}>
+                                <IncomeHeader />
+                            </Paper>
+                        </Grid>
+                        {/* Recent Orders */}
+
+                    </Grid>
+
+                </Container>
+
+
+            <br/>
+            <br/>
             <FormControl className={classes.formControl}>
                 <InputLabel id="demo-controlled-open-select-label">Filter</InputLabel>
                 <Select
@@ -401,20 +523,21 @@ export default function MaterialTableDemo(props) {
                     labelId="demo-mutiple-checkbox-label"
                     id="demo-mutiple-checkbox"
                     multiple
+                    onClose={filterBySalesman}
                     value={filterSalesman}
-                    onChange={filterBySalesman}
-                    input={<Input />}
-                    renderValue={(selected) => selected.forEach((item,index)=>item.name)}
+                    onChange={(e) => setFilterSalesman(e.target.value)}
+                    input={<Input/>}
+                    renderValue={(selected) => selected.forEach((item, index) => item.name)}
                     MenuProps={MenuProps}
                 >
 
-                    { salesman?salesman.map((item,index) => (
+                    {salesman ? salesman.map((item, index) => (
 
                         <MenuItem key={index} value={item.salesmanId}>
-                            <Checkbox checked={filterSalesman.indexOf(item.salesmanId) > -1} />
-                            <ListItemText primary={item.name} />
+                            <Checkbox checked={filterSalesman.indexOf(item.salesmanId) > -1}/>
+                            <ListItemText primary={item.name}/>
                         </MenuItem>
-                    )):''}
+                    )) : ''}
                 </Select>
             </FormControl>
 

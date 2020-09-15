@@ -164,7 +164,7 @@ function Dashboard(props) {
                             </NavLink>
                         </div>
                         <div className='list'>
-                            <NavLink activeClassName="activeLink" className='link' to={`${url}/history`}>
+                            <NavLink activeClassName="activeLink" className='link' to={`${url}`}>
                                 <ListItem button>
                                     <ListItemIcon> <HistoryIcon/></ListItemIcon>
                                     <ListItemText primary={'History'}/>

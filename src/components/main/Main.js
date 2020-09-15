@@ -3,12 +3,11 @@ import React, {useEffect, useState} from "react";
 import Chat from "../deshboard/chat/Chat";
 import AddProducts from "../deshboard/products/AddProduts";
 import AllProducts from "../deshboard/products/AllProducts";
-import Income from "../deshboard/income/Income";
 import HireSelsMen from "../deshboard/selsMen/HireSelsMen";
 import SelsMenDetail from "../deshboard/selsMen/SelsMenDetail";
 import EditProduct from "../deshboard/products/EditProduct";
 import EditSalesman from "../deshboard/selsMen/EditSalesman";
-import MyHistory from "../deshboard/history/myHistory";
+import MyHistory from "../deshboard/history/income/myHistory";
 import {
 
     Route,
@@ -105,10 +104,7 @@ useEffect(()=>{
                         <Route exact path={`${path}/editsalesman/:id`}>
                             <EditSalesman/>
                         </Route>
-                        <Route exact path={`${path}/income`}>
-                            <Income/>
-                        </Route>
-                        <Route exact path={`${path}/history`}>
+                        <Route exact path={`${path}`}>
                             <MyHistory  shopkeeperinfo={shopkeeperInformation}/>
                         </Route>
 

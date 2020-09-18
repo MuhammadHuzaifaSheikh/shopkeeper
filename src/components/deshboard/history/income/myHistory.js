@@ -163,8 +163,11 @@ let last30Days = Date.now() - (1000 * 3600 * 24 * 30);
 let lastYear = Date.now() - (1000 * 3600 * 24 * 365);
 let fullTime = Date.now();
 
+let totalSalesmanIncome = 0
+let totalShopkeeperIncome = 0
 
 export default function MaterialTableDemo(props) {
+
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -188,14 +191,13 @@ export default function MaterialTableDemo(props) {
     const [filterTime, setFilterTime] = useState(last30Days);
     const [filterSalesman, setFilterSalesman] = React.useState([]);
     const [salesman, setSalesman] = React.useState([]);
-
-
-    const [bill, setBill] = useState('');
+    const [bill, setBill] = useState([]);
+    const [totalSalesmanIncomeState, setTotalSalesmanIncomeState] = useState(totalSalesmanIncome);
+    const [totalShopkeeperIncomeState, setTotalShopkeeperIncomeState] = useState(totalShopkeeperIncome);
     useEffect(function () {
 
         filterTimeandget()
         getSalesman()
-
     }, [])
     const handleClose = () => {
         setOpen(false);
@@ -205,7 +207,6 @@ export default function MaterialTableDemo(props) {
         filterTimeandget()
         if (filterTime === fullTime) {
             getAll()
-
         }
     };
     const filterTimeandget = () => {
@@ -231,9 +232,10 @@ export default function MaterialTableDemo(props) {
         }).then((data) => {
             data.json().then((response) => {
                 setOpenDialog(false)
-
-
                 setBill(response.data)
+                calculateTotalIncome(response.data)
+
+                console.log('did mount',bill);
 
                 response.data.forEach((i) => {
                     i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
@@ -241,6 +243,7 @@ export default function MaterialTableDemo(props) {
 
                     i.quantity = i.totalProduct
                 })
+
 
 
                 setState((prevState) => {
@@ -285,6 +288,8 @@ export default function MaterialTableDemo(props) {
                 setMoveCircle(false)
 
                 setBill(response.data)
+                calculateTotalIncome(response.data)
+
                 response.data.forEach((i) => {
                     i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
                     i.totalAmount = i.totalAmount + ' Rs'
@@ -374,11 +379,12 @@ export default function MaterialTableDemo(props) {
                 data.json().then((response) => {
                     setOpenDialog(false)
 
-                    console.log(response);
+                    console.log(response.data);
                     setMoveCircle(false)
 
                     setBill(response.data)
-
+                    console.log('bill///////////////////////',bill);
+                    calculateTotalIncome(response.data)
                     response.data.forEach((i) => {
                         i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
                         i.totalAmount = i.totalAmount + ' Rs'
@@ -408,7 +414,8 @@ export default function MaterialTableDemo(props) {
                     setDialogText('Loading ....')
 
                 });
-        } else {
+        }
+        else {
             let filter = {
                 $or: conditionFilter,
                 timeOfSold: {$lte: filterTime},
@@ -427,10 +434,12 @@ export default function MaterialTableDemo(props) {
                 data.json().then((response) => {
                     setOpenDialog(false)
 
-                    console.log(response);
+                    console.log('555555555555',response);
                     setMoveCircle(false)
 
                     setBill(response.data)
+                    console.log('bill///////////////////////',bill);
+                    calculateTotalIncome(response.data)
 
                     response.data.forEach((i) => {
                         i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
@@ -472,28 +481,57 @@ export default function MaterialTableDemo(props) {
         setBill(rowData)
     }
 
+    const calculateTotalIncome = (bill) => {
+
+        totalSalesmanIncome = 0
+        totalShopkeeperIncome = 0
+
+        if (bill.length>0){
+            bill.forEach((item) => {
+                item.products.forEach((p) => {
+                    let salesmanIncome = p.price * p.quantity * p.commission / 100
+                    let shopkeeperIncome = p.price * p.quantity - salesmanIncome;
+
+                    totalSalesmanIncome += salesmanIncome
+                    totalShopkeeperIncome += shopkeeperIncome
+                    setTotalSalesmanIncomeState(totalSalesmanIncome)
+                    setTotalShopkeeperIncomeState(totalShopkeeperIncome)
+
+                })
+            })
+        }
+        else {
+            setTotalSalesmanIncomeState(0)
+            setTotalShopkeeperIncomeState(0)
+        }
+
+        console.log('bill9999999999',bill);
+
+
+    }
+
     return (
         <div>
 
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        {/* Chart */}
-                        <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={fixedHeightPaper}>
-                                <MyChart />
-                            </Paper>
-                        </Grid>
-                        {/* Recent Deposits */}
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <IncomeHeader />
-                            </Paper>
-                        </Grid>
-                        {/* Recent Orders */}
 
+            <Container maxWidth="lg" className={classes.container}>
+                <Grid container spacing={3}>
+                    {/* Chart */}
+                    <Grid item xs={12} md={8} lg={9}>
+                        <Paper className={fixedHeightPaper}>
+                            <MyChart/>
+                        </Paper>
+                    </Grid>
+                    {/* Recent Deposits */}
+                    <Grid item xs={12} md={4} lg={3}>
+                        <Paper className={fixedHeightPaper}>
+                            <IncomeHeader income={totalShopkeeperIncomeState}/>
+                        </Paper>
                     </Grid>
 
-                </Container>
+                </Grid>
+
+            </Container>
 
 
             <br/>
@@ -515,7 +553,6 @@ export default function MaterialTableDemo(props) {
                     <MenuItem value={fullTime}>All Time</MenuItem>
                 </Select>
             </FormControl>
-
 
             <FormControl className={classes.formControl}>
                 <InputLabel id="demo-mutiple-checkbox-label">Salesman Filter</InputLabel>

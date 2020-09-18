@@ -115,7 +115,7 @@ export default function SpanningTable(props) {
                 <TableBody>
                     {props.bill.products.map((row, index) => (
                         <TableRow key={index}>
-                            <TableCell>{row.price}</TableCell>
+                            <TableCell>{row.name}</TableCell>
                             <TableCell align="right">{row.price}</TableCell>
                             <TableCell align="right">{row.quantity}</TableCell>
                             <TableCell align="right">{row.amount}</TableCell>

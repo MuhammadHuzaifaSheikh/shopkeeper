@@ -1,12 +1,8 @@
 import React from 'react';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-// import Title from './Title';
-
-function preventDefault(event) {
-    event.preventDefault();
-}
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 const useStyles = makeStyles({
     depositContext: {
@@ -14,24 +10,29 @@ const useStyles = makeStyles({
     },
 });
 
-export default function Deposits() {
+export default function IncomeHeader({income}) {
     const classes = useStyles();
     return (
         <>
-            <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Recent Deposits
-            </Typography>
-            <Typography component="p" variant="h4">
-                $3,024.00
-            </Typography>
-            <Typography color="textSecondary" className={classes.depositContext}>
-                on 15 March, 2019
-            </Typography>
-            <div>
-                <Link color="primary" href="#" onClick={preventDefault}>
-                    View balance
-                </Link>
-            </div>
+            <Card className={classes.root}>
+                <CardContent>
+                    <Typography className={classes.title} variant="h5" component="h2" color="primary" gutterBottom>
+                      Your Income
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                        {income} Rs
+                    </Typography>
+                    <Typography className={classes.pos} color="textSecondary">
+                        adjective
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                        <br />
+                        {'"a benevolent smile"'}
+                    </Typography>
+                </CardContent>
+
+            </Card>
         </>
     );
 }

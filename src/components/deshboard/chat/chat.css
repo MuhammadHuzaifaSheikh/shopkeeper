@@ -1,0 +1,17 @@
+
+
+.chat{
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: #dadbd3;
+}
+
+.chat_body{
+    display: flex;
+    background: #ededed;
+    margin-top: -25px;
+    height: 85vh;
+    width: 70vw;
+    box-shadow: -1px 4px 20px -6px rgba(0,0,0,0.7);
+}

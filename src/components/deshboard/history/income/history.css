@@ -29,13 +29,16 @@
     font-weight: 800;
     margin-right: 5px;
     text-align: left;
+
 }
 
 .option2 {
     padding-left: 0;
     text-align: left;
 }
-
+.box1{
+    text-transform: capitalize;
+}
 
 /*table styling*/
 

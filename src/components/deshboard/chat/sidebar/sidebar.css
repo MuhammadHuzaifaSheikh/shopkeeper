@@ -5,6 +5,8 @@
     flex: 0.35;
 }
 
+
+
 .sidebar_header {
     display: flex;
     justify-content: space-between;
@@ -16,7 +18,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-width: 10vw;
 }
 
 .sidebar_headerRight > .MuiSvgIcon-root {
@@ -79,3 +80,5 @@
 .sidebarChat_info {
     margin-left: 15px;
 }
+
+

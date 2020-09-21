@@ -29,12 +29,13 @@ const useStyles = makeStyles({
 
 
 
-export default function SpanningTable(props) {
+ export default function SpanningTable(props) {
     const classes = useStyles();
 
     const [salesmanInformation, setSalesmanrInformation] = useState('');
 
     useEffect(function () {
+        console.log('table',props);
         let url = 'http://localhost:5000/salesman/getSalesman'
         fetch(url, {
             method: 'POST',
@@ -71,13 +72,13 @@ export default function SpanningTable(props) {
                     <thead>
                     <tr className='option'>
                         <td className='option1'>Shopkeeper </td>
-                        <td className='option2'> {props.shopkeeper.name}</td>
+                        <td className='option2'> {props.shopkeeper.name?props.shopkeeper.name:'Shopkeeper'}</td>
                     </tr>
                     </thead>
                     <tbody>
                     <tr className='option'>
                         <td className='option1'>Salesman</td>
-                        <td className='option2'>{salesmanInformation.name}</td>
+                        <td className='option2'>{salesmanInformation.name?salesmanInformation.name:'Salesman'}</td>
                     </tr>
                     <tr className='option'>
                         <td className='option1'>Address</td>
@@ -89,7 +90,7 @@ export default function SpanningTable(props) {
                     </tr>
                     <tr className='option'>
                         <td className='option1'>Time</td>
-                        <td className='option2'> {new Date(props.bill.timeOfSold).toLocaleTimeString()}</td>
+                        <td className='option2'> {new Date(props.bill.timeOfSold).toLocaleTimeString()?new Date(props.bill.timeOfSold).toLocaleTimeString():'time'}</td>
                     </tr>
                     </tbody>
 
@@ -135,6 +136,9 @@ export default function SpanningTable(props) {
 
                 </TableBody>
             </Table>
+
         </TableContainer>
     );
 }
+
+

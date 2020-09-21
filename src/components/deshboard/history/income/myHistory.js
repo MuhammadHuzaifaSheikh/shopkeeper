@@ -1,4 +1,4 @@
-import React, {forwardRef, useState, useEffect} from 'react';
+import React, {forwardRef, useState, useEffect,useRef } from 'react';
 import './history.css'
 import IncomeHeader from "./IncomeHeader";
 import MyChart from "../Graph/Graph";
@@ -14,14 +14,12 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
-
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
-
 import ListItemText from '@material-ui/core/ListItemText';
 import {
     AddBox, ArrowDownward,
@@ -34,7 +32,10 @@ import {
     FirstPage, LastPage, Remove,
     SaveAlt, Search, ViewColumn
 } from "@material-ui/icons";
+
 import Table from "./Table";
+import printjs from 'print-js'
+import { useReactToPrint } from 'react-to-print';
 
 
 const styles = (theme) => ({
@@ -182,6 +183,7 @@ export default function MaterialTableDemo(props) {
         data: [],
     });
 
+
     const [dialogText, setDialogText] = useState('Loading....')
     const [openDialog, setOpenDialog] = useState(false)
     const [moveCircle, setMoveCircle] = useState(false)
@@ -199,7 +201,11 @@ export default function MaterialTableDemo(props) {
         filterTimeandget()
         getSalesman()
     }, [])
+
+
     const handleClose = () => {
+        // printjs('myTable', 'html')
+        printjs({ printable: 'myTable', type: 'html', documentTitle:'Bill',header:'Selling Bill',style:'border: 1px solid #000;'})
         setOpen(false);
     };
     const handleChange = (event) => {
@@ -345,7 +351,6 @@ export default function MaterialTableDemo(props) {
 
             });
     }
-
     const filterBySalesman = () => {
 
         setOpenDialog(true)
@@ -474,13 +479,11 @@ export default function MaterialTableDemo(props) {
 
 
     }
-
     function openTable(d, rowData) {
         console.log(rowData);
         setOpen(true)
         setBill(rowData)
     }
-
     const calculateTotalIncome = (bill) => {
 
         totalSalesmanIncome = 0
@@ -512,8 +515,6 @@ export default function MaterialTableDemo(props) {
 
     return (
         <div>
-
-
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     {/* Chart */}
@@ -603,7 +604,7 @@ export default function MaterialTableDemo(props) {
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     Slip
                 </DialogTitle>
-                <DialogContent dividers>
+                <DialogContent id='myTable' dividers>
                     <Table shopkeeper={props.shopkeeperinfo} bill={bill}/>
 
                 </DialogContent>
@@ -613,6 +614,7 @@ export default function MaterialTableDemo(props) {
                     <Button autoFocus variant='contained' onClick={handleClose} color="primary">
                         Print
                     </Button>
+
                 </DialogActions>
             </Dialog>
 
@@ -621,3 +623,5 @@ export default function MaterialTableDemo(props) {
 
     );
 }
+
+

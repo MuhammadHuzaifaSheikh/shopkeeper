@@ -83,8 +83,8 @@ useEffect(()=>{
         return(
             <div>
                     <Switch>
-                        <Route exact path={`${path}/chat`}>
-                            <Chat/>
+                        <Route path={`${path}/chat`}>
+                            <Chat  shopkeeperinfo={shopkeeperInformation}/>
                         </Route>
                         <Route exact path={`${path}/hiresalesmen`}>
                             <HireSelsMen/>

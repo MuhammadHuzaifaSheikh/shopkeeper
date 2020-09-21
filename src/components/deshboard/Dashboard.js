@@ -230,10 +230,6 @@ function Dashboard(props) {
             </nav>
             <main className={classes.content}>
                     <div className={classes.toolbar}/>
-
-
-
-
                <Main/>
             </main>
         </div>

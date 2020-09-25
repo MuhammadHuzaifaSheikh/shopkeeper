@@ -1,35 +1,26 @@
-import React from "react";
-import {Avatar} from "@material-ui/core";
+import React, {useEffect, useState} from "react";
+import {Avatar,IconButton} from "@material-ui/core";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {useHistory, useRouteMatch} from "react-router-dom";
-export default function SidebarChat({item}) {
-    let {path, url} = useRouteMatch();
-    let history = useHistory();
-
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+export default function SidebarChat({item,ifFriend,ifFriendBollean}) {
     return(
-
         <div>
-            {/*<Avatar/>*/}
-            {/*<div className="sidebarChat_info">*/}
-                {/*<h2>{name}</h2>*/}
-                {/*<p>This is the last chat</p>*/}
-                <List component="nav" aria-label="main mailbox folders">
+                <List style={{display:'flex',justifyContent:'row',alignItems:'center'}} component="nav" aria-label="main mailbox folders">
                     <ListItem
-                        onClick={()=>history.push(`${url}/`+item.salesmanId)}
-                        button
                     >
-                        <ListItemIcon>
-                            <Avatar />
-                        </ListItemIcon>
+                        <ListItemIcon> <Avatar /></ListItemIcon>
                         <ListItemText style={{textTransform:'capitalize'}}  primary={item.name} />
 
                     </ListItem>
+                    <IconButton onClick={()=>ifFriend(item.salesmanId,ifFriendBollean)}>    {  ifFriendBollean?<PersonAddIcon style={{color:'#4caf50'}}  />:<PersonAddDisabledIcon />}     </IconButton>
+
 
                 </List>
-            {/*</div>*/}
         </div>
     )
 }

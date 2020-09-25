@@ -39,7 +39,6 @@ useEffect(()=>{
             }
         }).then((data) => {
             data.json().then((response) => {
-                console.log('shopkeeper',response);
                 setShopkeeperInformation(response.data)
 
 
@@ -54,7 +53,6 @@ useEffect(()=>{
 
             });
     }
-
     const getSalesman=()=>{
         let url = 'http://localhost:5000/salesman/get'
         fetch(url, {
@@ -66,7 +64,6 @@ useEffect(()=>{
             }
         }).then((data) => {
             data.json().then((response) => {
-                console.log(response,'response');
                 setSalesman(response.data)
             })
 

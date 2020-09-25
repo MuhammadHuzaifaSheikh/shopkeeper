@@ -7,36 +7,18 @@ import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import {useParams} from "react-router-dom";
-export default function ChatSheet() {
+
+export default function ChatSheet({getConversationId,messages}) {
     let { id } = useParams();
 
     useEffect(()=>{
-        getSalesman()
+
+        getConversationId(id)
+
+
     },[])
 
-    const getSalesman = () => {
-        let url = 'http://localhost:5000/salesman/get'
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),salesmanId:id}),
-            headers: {
-                "content-type": "application/json",
 
-            }
-        }).then((data) => {
-            data.json().then((response) => {
-                console.log(response, 'response');
-            })
-
-
-        })
-            .catch((error) => {
-                console.log(error);
-                console.log('error is running');
-
-
-            });
-    }
 
 
 
@@ -61,26 +43,15 @@ export default function ChatSheet() {
                 </div>
             </div>
             <div className="chat_body2">
-                <p className='chat_message'>
-                    <span className="chat_name">Huzaifa</span>
-                    This is a message
-                    <span className="chat_timestamp">{new Date().toLocaleString()}</span>
-                </p>
-                <p className='chat_message chat_receiver'>
-                    <span className="chat_name">Huzaifa</span>
-                    This is a message
-                    <span className="chat_timestamp">{new Date().toLocaleString()}</span>
-                </p>
-                <p className='chat_message'>
-                    <span className="chat_name">Huzaifa</span>
-                    This is a message
-                    <span className="chat_timestamp">{new Date().toLocaleString()}</span>
-                </p>
-                <p className='chat_message chat_receiver'>
-                    <span className="chat_name">Huzaifa</span>
-                    This is a message
-                    <span className="chat_timestamp">{new Date().toLocaleString()}</span>
-                </p>
+                {messages.map((item,index)=>{
+                 return(   <p className={`chat_message  ${item.senderId===localStorage.getItem('shopkeeper')?'chat_receiver':''}`}>
+                        <span className="chat_name">Hamza</span>
+                         {item.message}
+                        <span className="chat_timestamp">{new Date(item.messageTime).toLocaleString()}</span>
+                    </p>
+                 )
+                })}
+
                 <p className='chat_message chat_receiver'>
                     <span className="chat_name">Huzaifa</span>
                     This is a message

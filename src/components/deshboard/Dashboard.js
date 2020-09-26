@@ -76,8 +76,6 @@ function Dashboard(props) {
     const {window} = props;
     const classes = useStyles();
     let {path, url} = useRouteMatch();
-    console.log(path,'path');
-    console.log(url,'url');
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [openProduct, setOpenProduct] = React.useState(false);

@@ -21,7 +21,7 @@ export default function Chat (){
             }
         }).then((data) => {
             data.json().then((response) => {
-                // console.log('messages',response.data);
+                console.log('messages',response.data);
                 setMessages(response.data)
 
             })
@@ -60,10 +60,10 @@ export default function Chat (){
     return(
         <div className='chat'>
         <div className='chat_body'>
-            <Sidebar/>
+            <Sidebar />
             <Switch>
                 <Route exact path={`${path}/:id`}>
-                    <ChatSheet messages={messages} getConversationId={loadMessages}/>
+                    <ChatSheet messages={messages} getConversation={loadMessages}/>
                 </Route>
                 <Route exact path={`${path}`}>
                   <div className='chat_home'>

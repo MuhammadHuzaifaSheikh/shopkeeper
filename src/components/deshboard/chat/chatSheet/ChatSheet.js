@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {IconButton,Avatar} from "@material-ui/core";
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
@@ -8,18 +8,18 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import {useParams} from "react-router-dom";
 
-export default function ChatSheet({getConversationId,messages}) {
+export default function ChatSheet({getConversation,messages}) {
     let { id } = useParams();
 
     useEffect(()=>{
 
-        getConversationId(id)
+        getConversation(id)
+
+    },[id])
 
 
-    },[])
 
-
-
+    console.log('messages',messages);
 
 
     return(
@@ -44,7 +44,7 @@ export default function ChatSheet({getConversationId,messages}) {
             </div>
             <div className="chat_body2">
                 {messages.map((item,index)=>{
-                 return(   <p className={`chat_message  ${item.senderId===localStorage.getItem('shopkeeper')?'chat_receiver':''}`}>
+                 return(   <p className={`chat_message  ${item.senderId===localStorage.getItem('shopkeeper')&&"chat_receiver"}`}>
                         <span className="chat_name">Hamza</span>
                          {item.message}
                         <span className="chat_timestamp">{new Date(item.messageTime).toLocaleString()}</span>

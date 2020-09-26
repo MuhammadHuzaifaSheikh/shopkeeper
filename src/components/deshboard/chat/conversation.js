@@ -11,9 +11,9 @@ export default function Conversation({item}) {
     let {path, url} = useRouteMatch();
     let history = useHistory();
 
-    useEffect(()=>{
-        console.log(item);
-    },[])
+
+
+
 
     return(
 
@@ -21,7 +21,8 @@ export default function Conversation({item}) {
 
             <List component="nav" aria-label="main mailbox folders">
                 <ListItem
-                    onClick={()=>history.push(`${url}/`+item.conversationId)}
+                    onClick={()=>     history.push(`${url}/${item._id}`)}
+
                     button
                 >
                     <ListItemIcon> <Avatar src={item.photoUrl} /></ListItemIcon>

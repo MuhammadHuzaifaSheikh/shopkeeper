@@ -15,7 +15,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import {withStyles} from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Conversation from "../conversation";
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 const styles = (theme) => ({
     root: {
         margin: 0,
@@ -50,6 +53,9 @@ const DialogContent = withStyles((theme) => ({
 
 export default function Sidebar() {
     let ids = []
+    let userIds= []
+    let history = useHistory();
+    let {path} = useRouteMatch();
 
 
     const [salesman, setSalesman] = useState([])
@@ -67,8 +73,7 @@ export default function Sidebar() {
     useEffect(function () {
         getSalesman()
         getConversation()
-        // getUserDetail()
-
+        getUserDetail()
     }, [])
 
     function getSalesman() {
@@ -101,6 +106,8 @@ export default function Sidebar() {
 
     function addConversation() {
 
+
+
         let conversation = {
             members: ids
         }
@@ -113,14 +120,11 @@ export default function Sidebar() {
                 "content-type": "application/json",
 
             }
-        }).then((data) => {
-            data.json().then((response) => {
-                console.log(response, 'response');
+        }).then((data) => {data.json().then((response) => {
+                history.push(`${path}/${response.data._id}`)
+
             })
-
-
-        })
-            .catch((error) => {
+        }).catch((error) => {
                 console.log(error);
                 console.log('error is running');
 
@@ -130,7 +134,7 @@ export default function Sidebar() {
 
     function getConversation() {
         let conversation = {
-            members: localStorage.getItem('shopKeeper')
+            members:{ $in: [ localStorage.getItem('shopKeeper')] }
         }
 
         let url = 'http://localhost:5000/conversation/get'
@@ -143,9 +147,8 @@ export default function Sidebar() {
             }
         }).then((data) => {
             data.json().then((response) => {
-                console.log('conversation',response);
+                setConversation(response.data)
 
-                let arr= []
 
                 response.data.forEach((item,index)=>{
 
@@ -153,16 +156,17 @@ export default function Sidebar() {
                     item.members.forEach((v,i)=>{
 
                         if (v!==localStorage.getItem('shopKeeper')){
-                            console.log('filter',v);
 
-                            arr.push(v)
+                            // userIds.push( {salesmanId:v})
+
+                            // setConversationId(item._id)
+
+                            // getUserDetail(item._id)
 
 
-
-                            getUserDetail(v,item._id)
 
                         }
-                        console.log('/////////////////',arr);
+
 
                     })
 
@@ -180,37 +184,43 @@ export default function Sidebar() {
     }
 
 
-    function getUserDetail(id,conversationId) {
+    function getUserDetail() {
+
+
+        let filter = {
+            $or: userIds,
+        };
         let url = 'http://localhost:5000/salesman/salesmanDetail'
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify({salesmanId: id}),
+            body: JSON.stringify(filter),
             headers: {
                 "content-type": "application/json",
 
             }
-        }).then((data) => {
-            data.json().then((response) => {
-                console.log('detail',response);
-
-                response.data.forEach((item)=>{
-                    item.conversationId=conversationId
-                })
-
-                setConversation(response.data)
-
-                console.log(conversation);
-                // conversation.push(response.data)
-            })
-
-
-        })
-            .catch((error) => {
+        }).then((data) => {data.json().then((response) => {
+                setUserDetail(response.data)
+            })}).catch((error) => {
                 console.log(error);
                 console.log('error is running');
 
 
             });
+
+        conversation.forEach((item)=>{
+            item.userDetail=userDetail
+
+            item.members.forEach((v,i)=>{
+
+                if (v!==localStorage.getItem('shopKeeper')){
+                    userIds.push( {salesmanId:v})
+                }
+
+
+            })
+
+        })
+
     }
 
 
@@ -234,6 +244,8 @@ export default function Sidebar() {
 
     }
 
+
+    console.log(conversation);
 
     return (
         <div className='sidebar'>
@@ -262,7 +274,8 @@ export default function Sidebar() {
             </div>
             <div className="sidebar_chats">
                 {conversation.map((item, index) => {
-                    return <Conversation key={index} item={item}/>
+                    // console.log(conversation);
+                    return <Conversation key={index}  item={item}/>
                 })}
             </div>
 

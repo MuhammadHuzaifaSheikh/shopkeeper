@@ -204,20 +204,27 @@ export default function MaterialTableDemo(props) {
 
 
     const handleClose = () => {
-        // printjs('myTable', 'html')
         printjs({ printable: 'myTable', type: 'html', documentTitle:'Bill',header:'Selling Bill',style:'border: 1px solid #000;'})
         setOpen(false);
     };
     const handleChange = (event) => {
         setFilterTime(event.target.value);
-        filterTimeandget()
-        if (filterTime === fullTime) {
-            getAll()
-        }
+        console.log('time',new Date(filterTime));
+
     };
+
+  const  nestedListClose=()=>{
+      setOpenList(false)
+      filterTimeandget()
+      if (filterTime === fullTime) {
+          getAll()
+      }
+  }
+
     const filterTimeandget = () => {
         setOpenDialog(true)
 
+        console.log(new Date(last7Days));
 
         var filter = {
             $or: [
@@ -543,7 +550,7 @@ export default function MaterialTableDemo(props) {
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
                     open={openList}
-                    onClose={() => setOpenList(false)}
+                    onClose={nestedListClose}
                     onOpen={() => setOpenList(true)}
                     value={filterTime}
                     onChange={handleChange}

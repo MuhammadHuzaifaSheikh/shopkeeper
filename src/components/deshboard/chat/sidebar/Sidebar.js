@@ -53,7 +53,6 @@ const DialogContent = withStyles((theme) => ({
 
 export default function Sidebar() {
     let ids = []
-    let userIds= []
     let history = useHistory();
     let {path} = useRouteMatch();
 
@@ -62,6 +61,7 @@ export default function Sidebar() {
     const [open, setOpen] = useState(false);
     const [conversation, setConversation] =useState([]);
     const [userDetail, setUserDetail] =useState([]);
+    const [userIds, setUserIds] =useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -73,7 +73,6 @@ export default function Sidebar() {
     useEffect(function () {
         getSalesman()
         getConversation()
-        getUserDetail()
     }, [])
 
     function getSalesman() {
@@ -148,24 +147,13 @@ export default function Sidebar() {
         }).then((data) => {
             data.json().then((response) => {
                 setConversation(response.data)
-
-
                 response.data.forEach((item,index)=>{
-
-
                     item.members.forEach((v,i)=>{
-
                         if (v!==localStorage.getItem('shopKeeper')){
-
-                            // userIds.push( {salesmanId:v})
-
-                            // setConversationId(item._id)
-
-                            // getUserDetail(item._id)
-
-
+                            userIds.push( {salesmanId:v})
 
                         }
+                        // getUserDetail()
 
 
                     })
@@ -190,6 +178,7 @@ export default function Sidebar() {
         let filter = {
             $or: userIds,
         };
+        console.log('filter',filter);
         let url = 'http://localhost:5000/salesman/salesmanDetail'
         fetch(url, {
             method: 'POST',
@@ -200,7 +189,7 @@ export default function Sidebar() {
             }
         }).then((data) => {data.json().then((response) => {
                 setUserDetail(response.data)
-            })}).catch((error) => {
+        })}).catch((error) => {
                 console.log(error);
                 console.log('error is running');
 
@@ -210,16 +199,10 @@ export default function Sidebar() {
         conversation.forEach((item)=>{
             item.userDetail=userDetail
 
-            item.members.forEach((v,i)=>{
 
-                if (v!==localStorage.getItem('shopKeeper')){
-                    userIds.push( {salesmanId:v})
-                }
-
-
-            })
 
         })
+        console.log('user detail',conversation);
 
     }
 
@@ -245,7 +228,6 @@ export default function Sidebar() {
     }
 
 
-    console.log(conversation);
 
     return (
         <div className='sidebar'>

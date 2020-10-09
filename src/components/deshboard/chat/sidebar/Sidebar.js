@@ -4,21 +4,19 @@ import SidebarChat from "./SidebarChat";
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {IconButton, Avatar, Typography} from "@material-ui/core";
+import {IconButton, Avatar, Typography, CircularProgress} from "@material-ui/core";
 import DonutLargeOutlinedIcon from '@material-ui/icons/DonutLargeOutlined';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import {useRouteMatch, useHistory} from "react-router-dom";
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 import {withStyles} from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Conversation from "../conversation";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import Pusher from "pusher-js";
+
+
 const styles = (theme) => ({
     root: {
         margin: 0,
@@ -51,7 +49,9 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent);
 
 
-export default function Sidebar() {
+export default function Sidebar({onlineUsers}) {
+
+
     let ids = []
     let history = useHistory();
     let {path} = useRouteMatch();
@@ -59,9 +59,10 @@ export default function Sidebar() {
 
     const [salesman, setSalesman] = useState([])
     const [open, setOpen] = useState(false);
-    const [conversation, setConversation] =useState([]);
-    const [userDetail, setUserDetail] =useState([]);
-    const [userIds, setUserIds] =useState([]);
+    const [conversation, setConversation] = useState([]);
+    const [userIds, setUserIds] = useState([]);
+    const [openLoading, setOpenLoading] = useState(false);
+    const [onlinePerson, setOnlinePerson] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -70,25 +71,49 @@ export default function Sidebar() {
         setOpen(false);
     };
 
+
+
+
+
+    useEffect(()=>{
+        console.log('onlineUsers',onlineUsers);
+    },[onlineUsers])
+
+    useEffect(()=>{
+        const pusher = new Pusher('742bc87733a1b7fcf746', {
+            cluster: 'ap3'
+        });
+
+        const channel = pusher.subscribe('conversation');
+        channel.bind('add', (newData)=> {
+            setConversation([...conversation,newData])
+        });
+
+        return ()=>{
+            channel.unbind_all();
+            channel.unsubscribe()
+        }
+    },[conversation])
+
+
     useEffect(function () {
-        getSalesman()
+        getUser()
         getConversation()
     }, [])
 
-    function getSalesman() {
+
+    function getUser() {
+
         let url = 'http://localhost:5000/salesman/get'
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),}),
+            body: JSON.stringify({shopkeeperId:localStorage.getItem('shopKeeper')}),
             headers: {
                 "content-type": "application/json",
 
             }
         }).then((data) => {
             data.json().then((response) => {
-                response.data.forEach((item) => {
-                    item.isFriend = false
-                })
                 setSalesman(response.data)
             })
 
@@ -97,43 +122,43 @@ export default function Sidebar() {
             .catch((error) => {
                 console.log(error);
                 console.log('error is running');
-
-
             });
     }
-
 
     function addConversation() {
 
-
-
-        let conversation = {
+        for (let i = 0; i < conversation.length; i++) {
+            console.log('members',conversation[i].members);
+            console.log('ids',ids);
+            if (JSON.stringify(conversation[i].members) === JSON.stringify(ids)) {
+                history.push(`${path}/${conversation[i]._id}`)
+                return
+                break
+            }
+        }
+        let conversationCond = {
             members: ids
         }
-
         let url = 'http://localhost:5000/conversation/add'
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify(conversation),
-            headers: {
-                "content-type": "application/json",
-
-            }
-        }).then((data) => {data.json().then((response) => {
+            body: JSON.stringify(conversationCond), headers: {"content-type": "application/json",}
+        }).then((data) => {
+            data.json().then((response) => {
                 history.push(`${path}/${response.data._id}`)
-
             })
         }).catch((error) => {
-                console.log(error);
-                console.log('error is running');
+            console.log(error);
+            console.log('error is running');
+        });
 
 
-            });
     }
 
     function getConversation() {
+        // setOpenLoading(true)
         let conversation = {
-            members:{ $in: [ localStorage.getItem('shopKeeper')] }
+            members: {$in: [localStorage.getItem('shopKeeper')]}
         }
 
         let url = 'http://localhost:5000/conversation/get'
@@ -147,13 +172,13 @@ export default function Sidebar() {
         }).then((data) => {
             data.json().then((response) => {
                 setConversation(response.data)
-                response.data.forEach((item,index)=>{
-                    item.members.forEach((v,i)=>{
-                        if (v!==localStorage.getItem('shopKeeper')){
-                            userIds.push( {salesmanId:v})
+                response.data.forEach((item, index) => {
+                    item.members.forEach((v, i) => {
+                        if (v !== localStorage.getItem('shopKeeper')) {
+                            userIds.push({salesmanId: v})
 
                         }
-                        // getUserDetail()
+                        setOpenLoading(false)
 
 
                     })
@@ -172,61 +197,12 @@ export default function Sidebar() {
     }
 
 
-    function getUserDetail() {
-
-
-        let filter = {
-            $or: userIds,
-        };
-        console.log('filter',filter);
-        let url = 'http://localhost:5000/salesman/salesmanDetail'
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(filter),
-            headers: {
-                "content-type": "application/json",
-
-            }
-        }).then((data) => {data.json().then((response) => {
-                setUserDetail(response.data)
-        })}).catch((error) => {
-                console.log(error);
-                console.log('error is running');
-
-
-            });
-
-        conversation.forEach((item)=>{
-            item.userDetail=userDetail
-
-
-
-        })
-        console.log('user detail',conversation);
-
-    }
-
-
-
-    function isFriend(id, bollean) {
+    function isFriend(id) {
         ids = [localStorage.getItem('shopKeeper')]
-
-        for (var i = 0; i > ids.length; i++) {
-            if (ids[i] === id) {
-                // ids[i].isFriend = false
-                return;
-                break;
-
-            }
-
-        }
-
-
         ids.push(id)
         addConversation()
 
     }
-
 
 
     return (
@@ -256,12 +232,11 @@ export default function Sidebar() {
             </div>
             <div className="sidebar_chats">
                 {conversation.map((item, index) => {
-                    // console.log(conversation);
-                    return <Conversation key={index}  item={item}/>
+                    return <Conversation onlineUsers={onlineUsers} key={index} item={item}/>
                 })}
             </div>
 
-            <Dialog maxWidth='md' onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+            <Dialog fullWidth maxWidth='md' onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     Users
                 </DialogTitle>
@@ -273,6 +248,17 @@ export default function Sidebar() {
                     })}
                 </DialogContent>
 
+            </Dialog>
+            <Dialog
+                fullWidth
+                open={openLoading}
+                onClose={() => setOpenLoading(openLoading)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <DialogContent style={{textAlign: "center", paddingTop: "30px"}}>
+                    <CircularProgress color="primary"/>
+                    <Typography>Loading</Typography>
+                </DialogContent>
             </Dialog>
         </div>
     )

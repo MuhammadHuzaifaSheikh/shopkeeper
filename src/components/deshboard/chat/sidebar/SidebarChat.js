@@ -11,13 +11,10 @@ export default function SidebarChat({item,ifFriend,ifFriendBollean}) {
     return(
         <div>
                 <List style={{display:'flex',justifyContent:'row',alignItems:'center'}} component="nav" aria-label="main mailbox folders">
-                    <ListItem
-                    >
-                        <ListItemIcon> <Avatar /></ListItemIcon>
+                    <ListItem button onClick={()=>ifFriend(item.salesmanId,ifFriendBollean)}>
+                        <ListItemIcon> <Avatar src={item.photoUrl}/></ListItemIcon>
                         <ListItemText style={{textTransform:'capitalize'}}  primary={item.name} />
-
                     </ListItem>
-                    <IconButton onClick={()=>ifFriend(item.salesmanId,ifFriendBollean)}>    {  ifFriendBollean?<PersonAddIcon style={{color:'#4caf50'}}  />:<PersonAddDisabledIcon />}     </IconButton>
 
 
                 </List>

@@ -4,12 +4,10 @@ import ChatSheet from "./chatSheet/ChatSheet";
 import Sidebar from './sidebar/Sidebar'
 import {Route, Switch, useRouteMatch} from "react-router-dom";
 import Pusher from "pusher-js";
-export default function Chat (){
+
+export default function Chat ({onlineUsers}){
     let {path} = useRouteMatch();
     const [messages, setMessages] = useState([]);
-
-
-
     const loadMessages = (id) => {
         let url = 'http://localhost:5000/messages/get'
         fetch(url, {
@@ -21,7 +19,6 @@ export default function Chat (){
             }
         }).then((data) => {
             data.json().then((response) => {
-                console.log('messages',response.data);
                 setMessages(response.data)
 
             })
@@ -35,8 +32,6 @@ export default function Chat (){
 
             });
     }
-
-
     useEffect(()=>{
         const pusher = new Pusher('742bc87733a1b7fcf746', {
             cluster: 'ap3'
@@ -44,7 +39,6 @@ export default function Chat (){
 
         const channel = pusher.subscribe('message');
         channel.bind('insert', (newData)=> {
-            alert(JSON.stringify(newData));
             setMessages([...messages,newData])
         });
 
@@ -54,13 +48,11 @@ export default function Chat (){
         }
     },[messages])
 
-    console.log(messages);
-
 
     return(
         <div className='chat'>
         <div className='chat_body'>
-            <Sidebar />
+            <Sidebar onlineUsers={onlineUsers} />
             <Switch>
                 <Route exact path={`${path}/:id`}>
                     <ChatSheet messages={messages} getConversation={loadMessages}/>

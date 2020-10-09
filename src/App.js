@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Dashboard from "./components/deshboard/Dashboard";
 import SignIn from "./components/auth/shopKeeper/SignIn";
 import SignUp from "./components/auth/shopKeeper/SignUp";
@@ -12,6 +12,8 @@ import {
 
 
 export default function App() {
+
+
     return (
                 <Router>
                 <Switch>

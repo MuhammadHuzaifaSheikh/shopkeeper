@@ -97,7 +97,7 @@ export default function EditSalsman() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/salesman/getForEdit'
+        let url = 'https://salesman-back.herokuapp.com/salesman/getForEdit'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({_id: id}),
@@ -166,7 +166,7 @@ export default function EditSalsman() {
 
 
             setOpenDialog(true)
-            let url = 'http://localhost:5000/salesman/edit'
+            let url = 'https://salesman-back.herokuapp.com/salesman/edit'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(salesmanData),

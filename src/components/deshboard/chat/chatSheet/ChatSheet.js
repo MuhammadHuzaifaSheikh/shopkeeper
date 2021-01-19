@@ -188,7 +188,7 @@ export default function ChatSheet({getConversation, messages,socket}) {
             _id: id
         }
 
-        let url = 'http://localhost:5000/conversation/getOne'
+        let url = 'https://salesman-back.herokuapp.com/conversation/getOne'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(conversation),
@@ -221,7 +221,7 @@ export default function ChatSheet({getConversation, messages,socket}) {
     }
 
     function getUserDetail(salesmanId) {
-        let url = 'http://localhost:5000/salesman/getSalesman'
+        let url = 'https://salesman-back.herokuapp.com/salesman/getSalesman'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({salesmanId}),
@@ -285,7 +285,7 @@ export default function ChatSheet({getConversation, messages,socket}) {
         }
 
 
-        let url = 'http://localhost:5000/messages/add'
+        let url = 'https://salesman-back.herokuapp.com/messages/add'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(messageData),
@@ -325,7 +325,7 @@ export default function ChatSheet({getConversation, messages,socket}) {
         })
         senderIds.forEach((item) => {
             if (item === localStorage.getItem('shopKeeper')) {
-                let url = 'http://localhost:5000/shopkeeper/get'
+                let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
                 fetch(url, {
                     method: 'POST',
                     body: JSON.stringify({shopkeeperId: {$in: senderIds}}),
@@ -342,7 +342,7 @@ export default function ChatSheet({getConversation, messages,socket}) {
                 })
             } else {
 
-                let url = 'http://localhost:5000/salesman/getSalesman'
+                let url = 'https://salesman-back.herokuapp.com/salesman/getSalesman'
                 fetch(url, {
                     method: 'POST',
                     body: JSON.stringify({salesmanId: {$in: senderIds}}),

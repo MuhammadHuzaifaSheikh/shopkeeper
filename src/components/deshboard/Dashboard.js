@@ -85,7 +85,7 @@ function Dashboard(props) {
         getShopkeeperInfo();
     },)
   const  getShopkeeperInfo =()=> {
-        let url = 'http://localhost:5000/shopkeeper/get'
+        let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId:localStorage.getItem('shopkeeperId')}),
@@ -97,7 +97,7 @@ function Dashboard(props) {
             data.json().then((response) => {
                console.log(response);
                setMyDatan()
-                
+
 
             })
 

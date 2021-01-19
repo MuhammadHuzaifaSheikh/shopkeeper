@@ -133,7 +133,7 @@ export default function AddProducts() {
 
         console.log(data);
 
-        let url = 'http://localhost:5000/products/add'
+        let url = 'https://salesman-back.herokuapp.com/products/add'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(data),

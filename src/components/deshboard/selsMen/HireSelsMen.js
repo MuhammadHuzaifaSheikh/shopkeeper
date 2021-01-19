@@ -120,7 +120,7 @@ export default function HireSalesMan() {
         firebase.auth().createUserWithEmailAndPassword(email, password).then(function (data) {
             setOpenDialog(true)
             salesmanData.salesmanId = data.user.uid
-            let url = 'http://localhost:5000/salesman/add'
+            let url = 'https://salesman-back.herokuapp.com/salesman/add'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(salesmanData),

@@ -148,7 +148,7 @@ export default function SignUp() {
         firebase.auth().createUserWithEmailAndPassword(email, password).then(function (data) {
             setOpenDialog(true)
             shopKeeperData.shopkeeperId = data.user.uid
-            let url = 'http://localhost:5000/shopkeeper/add'
+            let url = 'https://salesman-back.herokuapp.com/shopkeeper/add'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(shopKeeperData),

@@ -104,7 +104,7 @@ export default function Sidebar({onlineUsers,socket}) {
 
     function getUser() {
 
-        let url = 'http://localhost:5000/salesman/get'
+        let url = 'https://salesman-back.herokuapp.com/salesman/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId:localStorage.getItem('shopKeeper')}),
@@ -133,7 +133,7 @@ export default function Sidebar({onlineUsers,socket}) {
             ],
         }
 
-        let url2 = 'http://localhost:5000/conversation/getForMatch'
+        let url2 = 'https://salesman-back.herokuapp.com/conversation/getForMatch'
         fetch(url2, {
             method: 'POST',
             body: JSON.stringify({queries: conversationMatch, addMember: ids}),
@@ -145,7 +145,7 @@ export default function Sidebar({onlineUsers,socket}) {
                     history.push(`${path}/${response.data._id}`)
                 } else {
                     let conversationCond = {members: ids}
-                    let url = 'http://localhost:5000/conversation/add'
+                    let url = 'https://salesman-back.herokuapp.com/conversation/add'
                     fetch(url, {
                         method: 'POST',
                         body: JSON.stringify(conversationCond),
@@ -176,7 +176,7 @@ export default function Sidebar({onlineUsers,socket}) {
             members: {$in: [localStorage.getItem('shopKeeper')]}
         }
 
-        let url = 'http://localhost:5000/conversation/get'
+        let url = 'https://salesman-back.herokuapp.com/conversation/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(conversation),

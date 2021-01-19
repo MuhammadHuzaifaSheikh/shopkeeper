@@ -10,13 +10,13 @@ export default function Chat ({onlineUsers,socket}){
     const [conversationId, setConversationId] = useState('');
     const loadMessages = (id) => {
         setConversationId(id)
-        let url = 'http://localhost:5000/messages/get'
+        let url = 'https://salesman-back.herokuapp.com/messages/get'
         fetch(url, {method: 'POST', body: JSON.stringify({conversationId: id}), headers: {"content-type": "application/json",}
         }).then((data) => {data.json().then((response) => {setMessages(response.data)})}).catch((error) => {console.log(error);console.log('error is running');});}
     useEffect(() => {
         socket.on('message/'+conversationId,newData=>{
             setMessages([...messages, newData]);
-            let url = 'http://localhost:5000/messages/update'
+            let url = 'https://salesman-back.herokuapp.com/messages/update'
             fetch(url, {
                 method: 'POST', body: JSON.stringify({_id:newData._id,messageSent:false,messageReceived:true,messageRead:false}), headers: {"content-type": "application/json",}
             }).then((data) => {

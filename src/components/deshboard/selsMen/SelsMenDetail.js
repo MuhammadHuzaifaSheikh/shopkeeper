@@ -87,7 +87,7 @@ export default function Salsman() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/salesman/get'
+        let url = 'https://salesman-back.herokuapp.com/salesman/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),}),
@@ -148,7 +148,7 @@ export default function Salsman() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/salesman/delete'
+        let url = 'https://salesman-back.herokuapp.com/salesman/delete'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({id}),

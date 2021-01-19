@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 
     useEffect(function () {
         console.log('table',props);
-        let url = 'http://localhost:5000/salesman/getSalesman'
+        let url = 'https://salesman-back.herokuapp.com/salesman/getSalesman'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({salesmanId: props.bill.salesmanId,}),

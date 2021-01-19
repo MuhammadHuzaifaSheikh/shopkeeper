@@ -229,7 +229,7 @@ export default function MaterialTableDemo(props) {
         };
 
 
-        let url = 'http://localhost:5000/bill/filterBill'
+        let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(filter),
@@ -283,7 +283,7 @@ export default function MaterialTableDemo(props) {
         let filter = {shopkeeperId: localStorage.getItem('shopKeeper')};
 
 
-        let url = 'http://localhost:5000/bill/get'
+        let url = 'https://salesman-back.herokuapp.com/bill/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(filter),
@@ -330,7 +330,7 @@ export default function MaterialTableDemo(props) {
 
     }
     const getSalesman = () => {
-        let url = 'http://localhost:5000/salesman/get'
+        let url = 'https://salesman-back.herokuapp.com/salesman/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),}),
@@ -374,7 +374,7 @@ export default function MaterialTableDemo(props) {
                 shopkeeperId: localStorage.getItem('shopKeeper')
             };
 
-            let url = 'http://localhost:5000/bill/filterBill'
+            let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(filter),
@@ -429,7 +429,7 @@ export default function MaterialTableDemo(props) {
                 shopkeeperId: localStorage.getItem('shopKeeper')
             };
 
-            let url = 'http://localhost:5000/bill/filterBill'
+            let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(filter),

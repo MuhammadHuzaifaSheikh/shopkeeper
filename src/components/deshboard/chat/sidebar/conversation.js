@@ -65,7 +65,7 @@ export default function Conversation({item,onlineUsers,socket}) {
 
     function getUserDetail(id) {
         if (id===localStorage.getItem('shopKeeper')){
-            let url = 'http://localhost:5000/shopkeeper/get'
+            let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({shopkeeperId:id}),
@@ -84,7 +84,7 @@ export default function Conversation({item,onlineUsers,socket}) {
         }
 
         else {
-            let url = 'http://localhost:5000/salesman/getSalesman'
+            let url = 'https://salesman-back.herokuapp.com/salesman/getSalesman'
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({   salesmanId: id}),

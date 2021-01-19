@@ -46,7 +46,7 @@ export default function EditProduct() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/products/getForEdit'
+        let url = 'https://salesman-back.herokuapp.com/products/getForEdit'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({_id: id}),
@@ -136,7 +136,7 @@ export default function EditProduct() {
         setOpenDialog(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/products/edit'
+        let url = 'https://salesman-back.herokuapp.com/products/edit'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(data),

@@ -20,7 +20,7 @@ const socket = io('http://localhost:5000');
 //         getSalesman()
 //     }, [])
 //     const getShopkeeperInfo = () => {
-//         let url = 'http://localhost:5000/shopkeeper/get'
+//         let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
 //         fetch(url, {
 //             method: 'POST',
 //             body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper')}),
@@ -45,7 +45,7 @@ const socket = io('http://localhost:5000');
 //             });
 //     }
 //     const getSalesman = () => {
-//         let url = 'http://localhost:5000/salesman/get'
+//         let url = 'https://salesman-back.herokuapp.com/salesman/get'
 //         fetch(url, {
 //             method: 'POST',
 //             body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper'),}),
@@ -131,7 +131,7 @@ export  default class Main extends Component{
 
     }
     componentDidMount() {
-        let url = 'http://localhost:5000/salesman/get'
+        let url = 'https://salesman-back.herokuapp.com/salesman/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({salesmanId: localStorage.getItem('salesman'),}),
@@ -160,7 +160,7 @@ export  default class Main extends Component{
     }
 
     getShopkeeperInfo (shopkeeperId) {
-        let url = 'http://localhost:5000/shopkeeper/get'
+        let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId}),

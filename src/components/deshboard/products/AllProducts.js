@@ -98,7 +98,7 @@ export default function MaterialTableDemo() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/products/get'
+        let url = 'https://salesman-back.herokuapp.com/products/get'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper')}),
@@ -162,7 +162,7 @@ export default function MaterialTableDemo() {
         setMoveCircle(true)
         setDialogText('Loading ....')
 
-        let url = 'http://localhost:5000/products/delete'
+        let url = 'https://salesman-back.herokuapp.com/products/delete'
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({id}),

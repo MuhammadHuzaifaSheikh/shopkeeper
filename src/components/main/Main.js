@@ -9,7 +9,7 @@ import EditSalesman from "../deshboard/selsMen/EditSalesman";
 import MyHistory from "../deshboard/history/income/myHistory";
 import {Route, Switch} from "react-router-dom";
 import io from 'socket.io-client';
-const socket = io('http://localhost:5000');
+const socket = io('https://salesman-back.herokuapp.com');
 // function Main() {
 //     let '/dashboard' = useRouteMatch();
 //     const [shopkeeperInformation, setShopkeeperInformation] = useState('');
@@ -146,7 +146,7 @@ export  default class Main extends Component{
         }}).catch((error) => {console.log(error);console.log('error is running');});
         })
         if (localStorage.getItem('shopKeeper')) {
-            io.connect('http://localhost:5000', {
+            io.connect('https://salesman-back.herokuapp.com', {
                 transports: ['websocket'],
                 query: 'userID=' + localStorage.getItem('shopKeeper') + '&companyID=' + localStorage.getItem('shopKeeper')
             })

@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import Dashboard from "./components/deshboard/Dashboard";
 import SignIn from "./components/auth/shopKeeper/SignIn";
 import SignUp from "./components/auth/shopKeeper/SignUp";
+import Error from "./components/errors/ErrorPage";
 import {
     BrowserRouter as Router,
     Switch,
@@ -36,7 +37,7 @@ export default function App() {
                     }}>
                     </Route>
                     <Route  path="*" render={() => {
-                        return   <Dashboard/>
+                        return   <Error/>
 
                     }}>
                     </Route>

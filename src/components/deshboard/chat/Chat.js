@@ -3,59 +3,37 @@ import './chat.css'
 import ChatSheet from "./chatSheet/ChatSheet";
 import Sidebar from './sidebar/Sidebar'
 import {Route, Switch, useRouteMatch} from "react-router-dom";
-import Pusher from "pusher-js";
 
-export default function Chat ({onlineUsers}){
+export default function Chat ({onlineUsers,socket}){
     let {path} = useRouteMatch();
     const [messages, setMessages] = useState([]);
+    const [conversationId, setConversationId] = useState('');
     const loadMessages = (id) => {
+        setConversationId(id)
         let url = 'http://localhost:5000/messages/get'
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({conversationId: id}),
-            headers: {
-                "content-type": "application/json",
-
-            }
-        }).then((data) => {
-            data.json().then((response) => {
-                setMessages(response.data)
-
+        fetch(url, {method: 'POST', body: JSON.stringify({conversationId: id}), headers: {"content-type": "application/json",}
+        }).then((data) => {data.json().then((response) => {setMessages(response.data)})}).catch((error) => {console.log(error);console.log('error is running');});}
+    useEffect(() => {
+        socket.on('message/'+conversationId,newData=>{
+            setMessages([...messages, newData]);
+            let url = 'http://localhost:5000/messages/update'
+            fetch(url, {
+                method: 'POST', body: JSON.stringify({_id:newData._id,messageSent:false,messageReceived:true,messageRead:false}), headers: {"content-type": "application/json",}
+            }).then((data) => {
+                data.json().then((response) => {})
             })
-
-
         })
-            .catch((error) => {
-                console.log(error);
-                console.log('error is running');
+    }, [messages])
 
-
-            });
-    }
-    useEffect(()=>{
-        const pusher = new Pusher('742bc87733a1b7fcf746', {
-            cluster: 'ap3'
-        });
-
-        const channel = pusher.subscribe('message');
-        channel.bind('insert', (newData)=> {
-            setMessages([...messages,newData])
-        });
-
-       return ()=>{
-            channel.unbind_all();
-            channel.unsubscribe()
-        }
-    },[messages])
 
 
     return(
         <div className='chat'>
         <div className='chat_body'>
-            <Sidebar onlineUsers={onlineUsers} />
+            <Sidebar socket={socket} onlineUsers={onlineUsers} />
             <Switch>
                 <Route exact path={`${path}/:id`}>
-                    <ChatSheet messages={messages} getConversation={loadMessages}/>
+                    <ChatSheet socket={socket} messages={messages} getConversation={loadMessages}/>
                 </Route>
                 <Route exact path={`${path}`}>
                   <div className='chat_home'>

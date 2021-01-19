@@ -139,10 +139,7 @@ export default class ImageUpload extends Component {
                         aria-describedby="alert-dialog-description">
                     <DialogContent style={{textAlign: "center", paddingTop: "30px"}}>
                         <div>
-                            <input accept="image/*"
-                                   style={{display: "none"}} id="outlined-button-file"
-                                   multiple type="file" onChange={this.onSelectFile}
-                            />
+                            <input accept="image/*" style={{display: "none"}} id="outlined-button-file" multiple type="file" onChange={this.onSelectFile}/>
                             <label htmlFor="outlined-button-file">
                                 <Button variant="outlined" component="span">
                                     Choose photo

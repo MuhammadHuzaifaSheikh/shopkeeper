@@ -198,38 +198,33 @@ export default function MaterialTableDemo(props) {
     const [totalShopkeeperIncomeState, setTotalShopkeeperIncomeState] = useState(totalShopkeeperIncome);
     useEffect(function () {
 
-        filterTimeandget()
+        filterTimeandget(last7Days)
         getSalesman()
     }, [])
 
 
     const handleClose = () => {
-        printjs({ printable: 'myTable', type: 'html', documentTitle:'Bill',header:'Selling Bill',style:'border: 1px solid #000;'})
         setOpen(false);
     };
     const handleChange = (event) => {
         setFilterTime(event.target.value);
-        console.log('time',new Date(filterTime));
-
+        filterTimeandget(event.target.value)
+        if (filterTime === fullTime) {
+            getAll()
+        }
     };
 
   const  nestedListClose=()=>{
       setOpenList(false)
-      filterTimeandget()
-      if (filterTime === fullTime) {
-          getAll()
-      }
+
   }
 
-    const filterTimeandget = () => {
+    const filterTimeandget = (time) => {
         setOpenDialog(true)
 
-        console.log(new Date(last7Days));
-
         var filter = {
-            $or: [
-                {timeOfSold: {$gte: filterTime}},
-            ],
+                timeOfSold: {$gte: time},
+
             shopkeeperId: localStorage.getItem('shopKeeper')
         };
 

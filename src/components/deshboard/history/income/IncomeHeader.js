@@ -20,7 +20,7 @@ export default function IncomeHeader({income}) {
                       Your Income
                     </Typography>
                     <Typography variant="h5" component="h2">
-                        {income} Rs
+                        { Math.floor(income)} Rs
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
                         adjective

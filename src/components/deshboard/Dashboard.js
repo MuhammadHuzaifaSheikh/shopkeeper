@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles/dashboard.css'
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,7 +23,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Background from '../backgroundImage/sidebar-2.d30c9e30.jpg'
-import {NavLink,useRouteMatch} from "react-router-dom";
+import {NavLink, useRouteMatch} from "react-router-dom";
 import HistoryIcon from '@material-ui/icons/History';
 
 import Main from "../main/Main";
@@ -61,14 +61,12 @@ const useStyles = makeStyles((theme) => ({
 
     drawerPaper: {
         width: drawerWidth,
-
-
     },
 
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
-        background:'#ccd7d9'
+        background: '#ccd7d9'
     },
 }));
 
@@ -80,8 +78,38 @@ function Dashboard(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [openProduct, setOpenProduct] = React.useState(false);
     const [openSelsMen, setOpenSelsMen] = React.useState(false);
+    const [myData, setMyDatan] = React.useState({});
 
 
+    useEffect(()=>{
+        getShopkeeperInfo();
+    },)
+  const  getShopkeeperInfo =()=> {
+        let url = 'http://localhost:5000/shopkeeper/get'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({shopkeeperId:localStorage.getItem('shopkeeperId')}),
+            headers: {
+                "content-type": "application/json",
+
+            }
+        }).then((data) => {
+            data.json().then((response) => {
+               console.log(response);
+               setMyDatan()
+                
+
+            })
+
+
+        })
+            .catch((error) => {
+                console.log(error);
+                console.log('error is running');
+
+
+            });
+    }
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -90,87 +118,93 @@ function Dashboard(props) {
     const drawer = (
 
         <div>
+            <div
+                // style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}
+                className={classes.toolbar}>
+                {/* <img style={{width: '70px', height: '70px', borderRadius: '50%'}} alt="image"
+                     src="../images/cricket%2019.jpg"/>
+                <h2 style={{fontSize: '16px', background: 'red'}}>Full Name</h2>
+                <p style={{color: 'rgba(0,0,0,0.5)'}}>some text will be here</p> */}
+            </div>
+            <Divider/>
+            <List>
 
-                        <div  className={classes.toolbar}> </div>
-                    <Divider/>
-                    <List>
 
+                <div className='list'>
 
-                        <div className='list'>
-
-                            <ListItem button onClick={()=> setOpenProduct(!openProduct)}>
-                                <ListItemIcon>
-                                    <ShoppingCartIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Products"/>
-                                {openProduct ? <ExpandLess/> : <ExpandMore/>}
-                            </ListItem>
-                        </div>
-                        <Collapse in={openProduct} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding>
-                                    <NavLink activeClassName="activeLink" className='link list' to={`${url}/allproducts`}>
-                                    <ListItem button className={classes.nested}>
-                                        <ListItemText primary="All Products"/>
-                                    </ListItem>
-                                    </NavLink>
-                                    <NavLink activeClassName="activeLink" className='link' to={`${url}/addproducts`}>
-                                    <ListItem button className={classes.nested}>
-
-                                        <ListItemText primary="Add Products"/>
-                                    </ListItem>
-                                    </NavLink>
-                                </List>
-                            </Collapse>
-
-                        <div className='list'>
-                            <ListItem button onClick={()=> setOpenSelsMen(!openSelsMen)} >
-                                <ListItemIcon> <MailIcon/></ListItemIcon>
-                                <ListItemText primary={'Sales Men'}/>
-                                {openSelsMen ? <ExpandLess/> : <ExpandMore/>}
-
-                            </ListItem>
-                        </div>
-                        <Collapse in={openSelsMen} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                <NavLink activeClassName="activeLink" className='link' to={`${url}/selsmendetail`}>
-                                <ListItem button className={classes.nested}>
-                                    <ListItemText primary="Sales Men Detail"/>
-                                </ListItem>
-                                </NavLink>
-                                <NavLink activeClassName="activeLink" className='link' to={`${url}/hiresalesmen`}>
-                                <ListItem  button className={classes.nested}>
-                                    <ListItemText primary="Hire Sales Men"/>
-                                </ListItem>
-                                </NavLink>
-                            </List>
-                        </Collapse>
-                        <div className='list'>
-                            <ListItem button>
-                                <ListItemIcon> <LocalAtmIcon/></ListItemIcon>
-                                <ListItemText primary={'Income'}/>
-                            </ListItem>
-                        </div>
-                    </List>
-                    <Divider/>
-                    <List>
-                        <div className='list'>
-                            <NavLink activeClassName="activeLink" className='link' to={`${url}/chat`}>
-                            <ListItem button>
-                                <ListItemIcon> <ChatIcon/></ListItemIcon>
-                                <ListItemText primary={'Chat'}/>
-                            </ListItem>
-                            </NavLink>
-                        </div>
-                        <div className='list'>
-                            <NavLink activeClassName="activeLink" className='link' to={`${url}`}>
-                                <ListItem button>
-                                    <ListItemIcon> <HistoryIcon/></ListItemIcon>
-                                    <ListItemText primary={'History'}/>
-                                </ListItem>
-                            </NavLink>
-                        </div>
-                    </List>
+                    <ListItem button onClick={() => setOpenProduct(!openProduct)}>
+                        <ListItemIcon>
+                            <ShoppingCartIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="Products"/>
+                        {openProduct ? <ExpandLess/> : <ExpandMore/>}
+                    </ListItem>
                 </div>
+                <Collapse in={openProduct} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <NavLink activeClassName="activeLink" className='link list' to={`${url}/allproducts`}>
+                            <ListItem button className={classes.nested}>
+                                <ListItemText primary="All Products"/>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink activeClassName="activeLink" className='link' to={`${url}/addproducts`}>
+                            <ListItem button className={classes.nested}>
+
+                                <ListItemText primary="Add Products"/>
+                            </ListItem>
+                        </NavLink>
+                    </List>
+                </Collapse>
+
+                <div className='list'>
+                    <ListItem button onClick={() => setOpenSelsMen(!openSelsMen)}>
+                        <ListItemIcon> <MailIcon/></ListItemIcon>
+                        <ListItemText primary={'Sales Men'}/>
+                        {openSelsMen ? <ExpandLess/> : <ExpandMore/>}
+
+                    </ListItem>
+                </div>
+                <Collapse in={openSelsMen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <NavLink activeClassName="activeLink" className='link' to={`${url}/selsmendetail`}>
+                            <ListItem button className={classes.nested}>
+                                <ListItemText primary="Sales Men Detail"/>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink activeClassName="activeLink" className='link' to={`${url}/hiresalesmen`}>
+                            <ListItem button className={classes.nested}>
+                                <ListItemText primary="Hire Sales Men"/>
+                            </ListItem>
+                        </NavLink>
+                    </List>
+                </Collapse>
+                <div className='list'>
+                    <ListItem button>
+                        <ListItemIcon> <LocalAtmIcon/></ListItemIcon>
+                        <ListItemText primary={'Income'}/>
+                    </ListItem>
+                </div>
+            </List>
+            <Divider/>
+            <List>
+                <div className='list'>
+                    <NavLink activeClassName="activeLink" className='link' to={`${url}/chat`}>
+                        <ListItem button>
+                            <ListItemIcon> <ChatIcon/></ListItemIcon>
+                            <ListItemText primary={'Chat'}/>
+                        </ListItem>
+                    </NavLink>
+                </div>
+                <div className='list'>
+                    <NavLink activeClassName="activeLink" className='link' to={`${url}`}>
+                        <ListItem button>
+                            <ListItemIcon> <HistoryIcon/></ListItemIcon>
+                            <ListItemText primary={'History'}/>
+                        </ListItem>
+                    </NavLink>
+                </div>
+            </List>
+        </div>
 
     );
 
@@ -227,8 +261,8 @@ function Dashboard(props) {
                 </Hidden>
             </nav>
             <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-               <Main/>
+                <div className={classes.toolbar}/>
+                <Main/>
             </main>
         </div>
     );

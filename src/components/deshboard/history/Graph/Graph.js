@@ -1,43 +1,21 @@
 import React from 'react'
-
-import { Chart } from 'react-charts'
+import {Bar} from 'react-chartjs-2'
 export default function MyChart() {
-    const data = React.useMemo(
-        () => [
-            {
-                label: 'Series 1',
-                data: [{ x: 1, y: 12 }, { x: 3, y: 4 }, { x: 5, y: 7 }]
-            },
-            {
-                label: 'Series 2',
-                data: [{ x: 7, y: 6 }, { x: 3, y: 4 }, { x: 5, y: 7 }]
-            },
 
-        ],
-        []
-    )
-    const series = React.useMemo(
-        () => ({
-            showPoints: true
-        }),
-        []
-    )
-    const axes = React.useMemo(
-        () => [
-            { primary: true, type: 'time', position: 'bottom' },
-            { type: 'linear', position: 'left' }
-        ],
-        []
-    )
+    let data={
+        labels:['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'],
+        datasets:[
+            {
+                label: 'sales in 2020',
+                data:[10,20,5,6,450,1000,100],
+                backgroundColor:'#3498db'
+            }
+        ]
+    }
 
     return (
-        <div
-            style={{
-                width: '100%',
-                height: '280px'
-            }}
-        >
-            <Chart curveBasisClosed={true} data={data} axes={axes} series={series} />
+        <div>
+            <Bar data={data}/>
         </div>
     )
 }

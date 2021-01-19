@@ -39,6 +39,16 @@
     border-radius: 10px;
     background: #ffff;
     margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+.message_image{
+    width:400px ;
+    height: auto;
+}
+.message{
+    max-width: 160px;
+
 }
 .chat_receiver{
     margin-left: auto;
@@ -55,26 +65,30 @@
     top: -15px;
     font-weight: 800;
     font-size: xx-small;
+    text-transform: capitalize;
 }
 .chat_footer{
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 62px;
+    background: gainsboro;
     border-top: 1px solid lightgray;
 }
-.chat_footer>form{
+.chat_footer>div{
     flex: 1;
     display: flex;
 }
-.chat_footer>form>input{
+.chat_footer>div>input{
     flex: 1;
     border-radius: 30px;
     padding: 10px;
     border: none;
     outline: 0;
+    transition: 0.8s;
 }
-.chat_footer>form>button{
+
+.chat_footer>div>button{
     display: none;
 }
 .chat_footer>.MuiSvgIcon-root{
@@ -82,4 +96,21 @@
     padding: 3px;
 
 }
+._1ceqH ._1lB9c{
+    display: none;
+}
 
+.send_message_status{
+    font-size: xx-small;
+    display: block;
+    margin-top:5px ;
+    height: 13px;
+
+}
+
+.send_message_status>.MuiSvgIcon-root{
+    color: gray;
+    float: right;
+    display: block;
+    margin-bottom:5px ;
+}

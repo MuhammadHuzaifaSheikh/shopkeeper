@@ -13,7 +13,7 @@ import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 import {withStyles} from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
-import Conversation from "../conversation";
+import Conversation from "./conversation";
 import Pusher from "pusher-js";
 
 
@@ -49,7 +49,7 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent);
 
 
-export default function Sidebar({onlineUsers}) {
+export default function Sidebar({onlineUsers,socket}) {
 
 
     let ids = []
@@ -125,27 +125,42 @@ export default function Sidebar({onlineUsers}) {
             });
     }
 
-    function addConversation() {
+    function addConversation(id) {
+        let conversationMatch = {
+            $and: [
+                {members: {$in: [id]}},
+                {members: {$in: [localStorage.getItem('shopKeeper')]}}
+            ],
+        }
 
-        for (let i = 0; i < conversation.length; i++) {
-            console.log('members',conversation[i].members);
-            console.log('ids',ids);
-            if (JSON.stringify(conversation[i].members) === JSON.stringify(ids)) {
-                history.push(`${path}/${conversation[i]._id}`)
-                return
-                break
-            }
-        }
-        let conversationCond = {
-            members: ids
-        }
-        let url = 'http://localhost:5000/conversation/add'
-        fetch(url, {
+        let url2 = 'http://localhost:5000/conversation/getForMatch'
+        fetch(url2, {
             method: 'POST',
-            body: JSON.stringify(conversationCond), headers: {"content-type": "application/json",}
+            body: JSON.stringify({queries: conversationMatch, addMember: ids}),
+            headers: {"content-type": "application/json",}
         }).then((data) => {
             data.json().then((response) => {
-                history.push(`${path}/${response.data._id}`)
+                console.log(response);
+                if (response.data) {
+                    history.push(`${path}/${response.data._id}`)
+                } else {
+                    let conversationCond = {members: ids}
+                    let url = 'http://localhost:5000/conversation/add'
+                    fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify(conversationCond),
+                        headers: {"content-type": "application/json",}
+                    }).then((data) => {
+                        data.json().then((response) => {
+                            history.push(`${path}/${response.data._id}`)
+                        })
+                    }).catch((error) => {
+                        console.log(error);
+                        console.log('error is running');
+                    });
+                }
+
+
             })
         }).catch((error) => {
             console.log(error);
@@ -200,7 +215,7 @@ export default function Sidebar({onlineUsers}) {
     function isFriend(id) {
         ids = [localStorage.getItem('shopKeeper')]
         ids.push(id)
-        addConversation()
+        addConversation(id)
 
     }
 
@@ -232,7 +247,7 @@ export default function Sidebar({onlineUsers}) {
             </div>
             <div className="sidebar_chats">
                 {conversation.map((item, index) => {
-                    return <Conversation onlineUsers={onlineUsers} key={index} item={item}/>
+                    return <Conversation socket={socket} onlineUsers={onlineUsers} key={index} item={item}/>
                 })}
             </div>
 

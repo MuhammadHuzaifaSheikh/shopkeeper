@@ -1,4 +1,4 @@
-import React, {forwardRef, useState, useEffect,useRef } from 'react';
+import React, {forwardRef, useState, useEffect, useRef} from 'react';
 import './history.css'
 import IncomeHeader from "./IncomeHeader";
 import MyChart from "../Graph/Graph";
@@ -35,7 +35,7 @@ import {
 
 import Table from "./Table";
 import printjs from 'print-js'
-import { useReactToPrint } from 'react-to-print';
+import {useReactToPrint} from 'react-to-print';
 
 
 const styles = (theme) => ({
@@ -198,7 +198,10 @@ export default function MaterialTableDemo(props) {
     const [totalShopkeeperIncomeState, setTotalShopkeeperIncomeState] = useState(totalShopkeeperIncome);
     useEffect(function () {
 
-        filterTimeandget(last7Days)
+        if (filterSalesman.length>0){
+            filterTimeandget(last7Days)
+
+        }
         getSalesman()
     }, [])
 
@@ -208,22 +211,25 @@ export default function MaterialTableDemo(props) {
     };
     const handleChange = (event) => {
         setFilterTime(event.target.value);
-        filterTimeandget(event.target.value)
-        if (filterTime === fullTime) {
+        if (filterSalesman.length>0){
+            filterTimeandget(event.target.value)
+
+        }
+        if (filterTime === fullTime&&filterSalesman.length>0) {
             getAll()
         }
     };
 
-  const  nestedListClose=()=>{
-      setOpenList(false)
+    const nestedListClose = () => {
+        setOpenList(false)
 
-  }
+    }
 
     const filterTimeandget = (time) => {
         setOpenDialog(true)
 
         var filter = {
-                timeOfSold: {$gte: time},
+            timeOfSold: {$gte: time},
 
             shopkeeperId: localStorage.getItem('shopKeeper')
         };
@@ -241,9 +247,10 @@ export default function MaterialTableDemo(props) {
             data.json().then((response) => {
                 setOpenDialog(false)
                 setBill(response.data)
+
                 calculateTotalIncome(response.data)
 
-                console.log('did mount',bill);
+                console.log('did mount', bill);
 
                 response.data.forEach((i) => {
                     i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
@@ -251,7 +258,6 @@ export default function MaterialTableDemo(props) {
 
                     i.quantity = i.totalProduct
                 })
-
 
 
                 setState((prevState) => {
@@ -280,13 +286,12 @@ export default function MaterialTableDemo(props) {
     }
     const getAll = () => {
         setMoveCircle(true)
-        let filter = {shopkeeperId: localStorage.getItem('shopKeeper')};
 
 
         let url = 'https://salesman-back.herokuapp.com/bill/get'
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify(filter),
+            body: JSON.stringify({shopkeeperId: localStorage.getItem('shopKeeper')}),
             headers: {
                 "content-type": "application/json",
 
@@ -341,7 +346,15 @@ export default function MaterialTableDemo(props) {
         }).then((data) => {
             data.json().then((response) => {
                 console.log(response, 'response');
-                setSalesman(response.data)
+                if (response.data){
+                    setSalesman(response.data)
+                    response.data.forEach((salesman)=>{
+                        console.log(salesman.salesmanId);
+                        filterSalesman.push(salesman.salesmanId)
+                    })
+
+                }
+
             })
 
 
@@ -354,8 +367,9 @@ export default function MaterialTableDemo(props) {
             });
     }
     const filterBySalesman = () => {
-
-        setOpenDialog(true)
+        if (filterSalesman.length>0) {
+            console.log('filterSalesman========>',filterSalesman);
+            setOpenDialog(true)
 
 
         let conditionFilter = []
@@ -367,131 +381,131 @@ export default function MaterialTableDemo(props) {
         })
 
 
-        if (filterTime !== fullTime) {
-            let filter = {
-                $or: conditionFilter,
-                timeOfSold: {$gte: filterTime},
-                shopkeeperId: localStorage.getItem('shopKeeper')
-            };
+            if (filterTime !== fullTime) {
+                let filter = {
+                    $or: conditionFilter,
+                    timeOfSold: {$gte: filterTime},
+                    shopkeeperId: localStorage.getItem('shopKeeper')
+                };
 
-            let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
-            fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(filter),
-                headers: {
-                    "content-type": "application/json",
+                let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(filter),
+                    headers: {
+                        "content-type": "application/json",
 
-                }
-            }).then((data) => {
-                data.json().then((response) => {
-                    setOpenDialog(false)
+                    }
+                }).then((data) => {
+                    data.json().then((response) => {
+                        setOpenDialog(false)
 
-                    console.log(response.data);
-                    setMoveCircle(false)
+                        console.log(response.data);
+                        setMoveCircle(false)
 
-                    setBill(response.data)
-                    console.log('bill///////////////////////',bill);
-                    calculateTotalIncome(response.data)
-                    response.data.forEach((i) => {
-                        i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
-                        i.totalAmount = i.totalAmount + ' Rs'
+                        setBill(response.data)
+                        calculateTotalIncome(response.data)
+                        response.data.forEach((i) => {
+                            i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
+                            i.totalAmount = i.totalAmount + ' Rs'
 
-                        i.quantity = i.totalProduct
+                            i.quantity = i.totalProduct
+                        })
+
+
+                        setState((prevState) => {
+                            let data = [...prevState.data];
+                            data = response.data
+                            return {...prevState, data};
+                        });
+
+
                     })
 
 
-                    setState((prevState) => {
-                        let data = [...prevState.data];
-                        data = response.data
-                        return {...prevState, data};
-                    });
-
-
                 })
+                    .catch((error) => {
+                        console.log(error);
+                        console.log('error is running');
+                        if (error === "TypeError: Failed to fetch") {
+                            setDialogText('Loading ....')
 
-
-            })
-                .catch((error) => {
-                    console.log(error);
-                    console.log('error is running');
-                    if (error === "TypeError: Failed to fetch") {
+                        }
                         setDialogText('Loading ....')
 
+                    });
+            } else if (filterTime === fullTime) {
+                let filter = {
+                    $or: conditionFilter,
+                    timeOfSold: {$lte: filterTime},
+                    shopkeeperId: localStorage.getItem('shopKeeper')
+                };
+
+                let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(filter),
+                    headers: {
+                        "content-type": "application/json",
+
                     }
-                    setDialogText('Loading ....')
+                }).then((data) => {
+                    data.json().then((response) => {
+                        setOpenDialog(false)
 
-                });
-        }
-        else {
-            let filter = {
-                $or: conditionFilter,
-                timeOfSold: {$lte: filterTime},
-                shopkeeperId: localStorage.getItem('shopKeeper')
-            };
+                        console.log('555555555555', response);
+                        setMoveCircle(false)
 
-            let url = 'https://salesman-back.herokuapp.com/bill/filterBill'
-            fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(filter),
-                headers: {
-                    "content-type": "application/json",
+                        setBill(response.data)
+                        calculateTotalIncome(response.data)
 
-                }
-            }).then((data) => {
-                data.json().then((response) => {
-                    setOpenDialog(false)
+                        response.data.forEach((i) => {
+                            i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
+                            i.totalAmount = i.totalAmount + ' Rs'
 
-                    console.log('555555555555',response);
-                    setMoveCircle(false)
+                            i.quantity = i.totalProduct
+                        })
 
-                    setBill(response.data)
-                    console.log('bill///////////////////////',bill);
-                    calculateTotalIncome(response.data)
 
-                    response.data.forEach((i) => {
-                        i.time = new Date(i.timeOfSold).toDateString() + ' , ' + new Date(i.timeOfSold).toLocaleTimeString()
-                        i.totalAmount = i.totalAmount + ' Rs'
+                        setState((prevState) => {
+                            let data = [...prevState.data];
+                            data = response.data
+                            return {...prevState, data};
+                        });
 
-                        i.quantity = i.totalProduct
+
                     })
 
 
-                    setState((prevState) => {
-                        let data = [...prevState.data];
-                        data = response.data
-                        return {...prevState, data};
-                    });
-
-
                 })
+                    .catch((error) => {
+                        console.log(error);
+                        console.log('error is running');
+                        if (error === "TypeError: Failed to fetch") {
+                            setDialogText('Loading ....')
 
-
-            })
-                .catch((error) => {
-                    console.log(error);
-                    console.log('error is running');
-                    if (error === "TypeError: Failed to fetch") {
+                        }
                         setDialogText('Loading ....')
 
-                    }
-                    setDialogText('Loading ....')
-
-                });
+                    });
+            }
         }
 
 
     }
+
     function openTable(d, rowData) {
         console.log(rowData);
         setOpen(true)
         setBill(rowData)
     }
+
     const calculateTotalIncome = (bill) => {
 
         totalSalesmanIncome = 0
         totalShopkeeperIncome = 0
 
-        if (bill.length>0){
+        if (bill?.length > 0) {
             bill.forEach((item) => {
                 item.products.forEach((p) => {
                     let salesmanIncome = p.price * p.quantity * p.commission / 100
@@ -504,13 +518,12 @@ export default function MaterialTableDemo(props) {
 
                 })
             })
-        }
-        else {
+        } else {
             setTotalSalesmanIncomeState(0)
             setTotalShopkeeperIncomeState(0)
         }
 
-        console.log('bill9999999999',bill);
+        console.log('bill9999999999', bill);
 
 
     }

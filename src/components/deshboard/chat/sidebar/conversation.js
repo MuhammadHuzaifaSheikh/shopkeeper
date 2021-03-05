@@ -73,7 +73,10 @@ export default function Conversation({item,onlineUsers,socket}) {
                     "content-type": "application/json",
                 }
             }).then((data) => {data.json().then((response) => {
-                setUserDetail(response.data)
+                console.log(response.data);
+                if (response.data){
+                    setUserDetail(response.data)
+                }
 
 
             })}).catch((error) => {
@@ -94,7 +97,10 @@ export default function Conversation({item,onlineUsers,socket}) {
                 }
             }).then((data) => {
                 data.json().then((response) => {
-                    setUserDetail(response.data)
+                    if (response.data){
+                        setUserDetail(response.data)
+                    }
+
                     setOpenDialog(false)
 
                 })
@@ -118,7 +124,7 @@ export default function Conversation({item,onlineUsers,socket}) {
                 <ListItem onClick={() => history.push(`${url}/${item._id}`)} button>
                     <ListItemIcon>
                         {
-                            userDetail.isOnline?
+                            userDetail?.isOnline?
                                 <StyledBadge
                                     overlap="circle"
                                     anchorOrigin={{
@@ -127,15 +133,15 @@ export default function Conversation({item,onlineUsers,socket}) {
                                     }}
                                     variant="dot"
                                 >
-                                    <Avatar src={userDetail.photoUrl?userDetail.photoUrl:''}/>
+                                    <Avatar src={userDetail?.photoUrl?userDetail?.photoUrl:''}/>
                                 </StyledBadge>
                                 :
-                                <Avatar src={userDetail.photoUrl?userDetail.photoUrl:''}/>
+                                <Avatar src={userDetail?.photoUrl?userDetail?.photoUrl:''}/>
                         }
 
                     </ListItemIcon>
                     <div>
-                        <ListItemText style={{textTransform: 'capitalize'}} primary={userDetail.name}/>
+                        <ListItemText style={{textTransform: 'capitalize'}} primary={userDetail?.name}/>
                         <ListItemText style={{color: 'grey', fontSize: '10px'}} primary={truncate(item?.lastMessage, 20)}/>
                     </div>
 

@@ -78,38 +78,8 @@ function Dashboard(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [openProduct, setOpenProduct] = React.useState(false);
     const [openSelsMen, setOpenSelsMen] = React.useState(false);
-    const [myData, setMyDatan] = React.useState({});
 
 
-    useEffect(()=>{
-        getShopkeeperInfo();
-    },)
-  const  getShopkeeperInfo =()=> {
-        let url = 'https://salesman-back.herokuapp.com/shopkeeper/get'
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({shopkeeperId:localStorage.getItem('shopkeeperId')}),
-            headers: {
-                "content-type": "application/json",
-
-            }
-        }).then((data) => {
-            data.json().then((response) => {
-               console.log(response);
-               setMyDatan()
-
-
-            })
-
-
-        })
-            .catch((error) => {
-                console.log(error);
-                console.log('error is running');
-
-
-            });
-    }
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

@@ -187,6 +187,7 @@ export default function Sidebar({onlineUsers,socket}) {
         }).then((data) => {
             data.json().then((response) => {
                 setConversation(response.data)
+                console.log(response.data);
                 response.data.forEach((item, index) => {
                     item.members.forEach((v, i) => {
                         if (v !== localStorage.getItem('shopKeeper')) {

@@ -163,6 +163,8 @@ export default function Salsman() {
                     setOpenDialog(false)
                     setMoveCircle(false)
 
+                    deleteConversationByRemovingSalesman(id)
+
 
                 }
                 let desertRef = storageRef.child(photoName);
@@ -196,6 +198,31 @@ export default function Salsman() {
 
 
             });
+
+    }
+
+
+
+    function deleteConversationByRemovingSalesman(id) {
+
+
+        let url = 'https://salesman-back.herokuapp.com/conversation/deleteConversationByRemovingSalesman'
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(id),
+            headers: {
+                "content-type": "application/json",
+
+            }
+        }).then((data) => {
+            data.json().then((response) => {
+                console.log('conversation delete=>',response.data);
+
+
+            })
+
+
+        })
 
     }
 

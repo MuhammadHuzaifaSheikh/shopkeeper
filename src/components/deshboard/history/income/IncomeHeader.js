@@ -22,14 +22,6 @@ export default function IncomeHeader({income}) {
                     <Typography variant="h5" component="h2">
                         { Math.floor(income)} Rs
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
-                        adjective
-                    </Typography>
-                    <Typography variant="body2" component="p">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
-                    </Typography>
                 </CardContent>
 
             </Card>

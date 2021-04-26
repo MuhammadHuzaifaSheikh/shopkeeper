@@ -98,8 +98,8 @@ export default function SignIn() {
 
     }
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('huzaifa900shaikh@gmail.com');
+    const [password, setPassword] = useState('125125');
 
     function onValueEmail(e) {
         setEmail(e.target.value);
@@ -133,6 +133,7 @@ export default function SignIn() {
                         name="email"
                         autoComplete="email"
                         onChange={onValueEmail}
+                        value={email}
                         autoFocus
                     />
                     <TextField
@@ -143,9 +144,10 @@ export default function SignIn() {
                         name="password"
                         label="Password"
                         type="password"
+                        value={password}
                         id="password"
                         onChange={onValuePassword}
-
+            
                         autoComplete="current-password"
                     />
                     <FormControlLabel
